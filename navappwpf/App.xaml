@@ -1,14 +1,15 @@
 ﻿<Application x:Class="navappwpf.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-    StartupUri="MainWindow.xaml">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:navappwpf"
+             >
     <Application.Resources>
-      <ResourceDictionary>
-          <ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary Source="/Telerik.Windows.Themes.Material;component/Themes/System.Windows.xaml"/>
-            <ResourceDictionary Source="/Telerik.Windows.Themes.Material;component/Themes/Telerik.Windows.Controls.xaml"/>
-          </ResourceDictionary.MergedDictionaries>
-      </ResourceDictionary>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/navappwpf;component/Presentation/ResourceDictionary/DataTemplate.xaml" />
+                <ResourceDictionary Source="/navappwpf;component/Presentation/ResourceDictionary/Style.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
