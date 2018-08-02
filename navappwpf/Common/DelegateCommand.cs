@@ -4,9 +4,6 @@ using System.Windows.Input;
 
 namespace navappwpf.Common
 {
-
-
-
     /// <summary>
     ///     This class allows delegating the commanding logic to methods passed as parameters,
     ///     and enables a View to bind commands to objects that are not part of the element tree.

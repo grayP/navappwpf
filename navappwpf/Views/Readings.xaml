@@ -1,0 +1,158 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s ="clr-namespace:navappwpf.Views.UserControls"
+             xmlns:local="clr-namespace:navappwpf.Views.Navigation"
+             xmlns:agc="http://www.arction.com/gauges/"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" x:Class="navappwpf.Views.NavigationReading"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="1000">
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top">
+                <Border Style="{StaticResource ResourceKey=BlueBorder}">
+                    <TextBlock Text="Navigation" Style="{StaticResource ResourceKey=BlueLabel}"/>
+                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="COG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text="-now" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock Grid.Row="0"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.NavReadings.CogNow, StringFormat=\{0\}°}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+                        <TextBlock 
+                        Grid.Row="1" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}" ><Run Text="COG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text=" -fast" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock 
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                        Text="{Binding Navigatedisplay.NavReadings.CogFast, StringFormat=\{0\}°}"  />
+
+                        <TextBlock 
+                        Grid.Row="2" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="COG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text="-slow" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock 
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                        Text="{Binding Navigatedisplay.NavReadings.CogSlow, StringFormat=\{0\}°}"  />
+
+
+                        <TextBlock 
+                        Grid.Row="0" 
+                        Grid.Column="2" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="SOG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text="-now" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+
+                        <TextBlock Grid.Row="0"
+                        Grid.Column="3"
+                        Text="{Binding Navigatedisplay.NavReadings.SogNow}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+                        <TextBlock 
+                        Grid.Row="1" 
+                        Grid.Column="2" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="SOG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text=" -fast" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock 
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                        Text="{Binding Navigatedisplay.NavReadings.SogShort, Mode=OneWay}"  />
+                        <TextBlock 
+                        Grid.Row="2" 
+                        Grid.Column="2"  
+                        Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="SOG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text="-slow" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock 
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                        Text="{Binding Navigatedisplay.NavReadings.SogLong, Mode=OneWay}"  />
+
+
+
+                        <TextBlock 
+                        Grid.Row="3" 
+                        Grid.Column="0"  
+                        Style="{StaticResource ResourceKey=NavigationLabel}"><Run Text="COG" Style="{StaticResource ResourceKey=NavLabel}" /><Run Text=" "/><Run Text="-past" Style="{StaticResource ResourceKey=NavSmall}" /></TextBlock>
+                        <TextBlock 
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                        Text="{Binding Navigatedisplay.NavReadings.CogSlowPrevious, StringFormat=\{0\}°}"  />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <agc:Gauge x:Name="SpeedGauge" 
+                                   Margin="0,0,0,0" 
+                                   VerticalAlignment="Top" 
+                                   Theme="CarMeter" 
+                                   ArcPadding="0" 
+                                   StrokeThickness="3" 
+                                   Stroke="#FFCDCDCD" 
+                                   Fill="Black" 
+                                   Width="400" 
+                                   Height="Auto">
+                            <agc:Gauge.PrimaryScale>
+
+                                <agc:Scale x:Name="SpeedScale" 
+                                           Value="{Binding Navigatedisplay.NavReadings.SogNow}" 
+                                           ArcPadding="-4" 
+                                           ArcStrokeThickness="2" 
+                                           ValueIndicatorDistanceType="Absolute" 
+                                           ValueIndicatorDistance="70" 
+                                           LabelDistanceType="Absolute" 
+                                           LabelDistance="40" 
+                                           UseLayoutRounding="False"
+                                           RangeEnd="10"
+                                           RangeBegin="0"
+                                           MajorTickCount="10"
+                                           Label="Knots"
+                                          
+                                          
+                                           />
+                            </agc:Gauge.PrimaryScale>
+
+                            <agc:Gauge.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <!--<DoubleAnimation
+                                    Storyboard.TargetName="SpeedScale"
+                                    Storyboard.TargetProperty="Value" 
+                                    From="0" To="230" Duration="0:0:5"
+                                    RepeatBehavior="Forever"
+                                    AutoReverse="True"
+                                />-->
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </agc:Gauge.Triggers>
+                        </agc:Gauge>
+
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</UserControl>

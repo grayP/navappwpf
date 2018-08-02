@@ -1,15 +1,13 @@
-﻿
-using System.Windows.Controls;
-
+﻿using System.Windows.Controls;
 
 namespace navappwpf.Views
 {
     /// <summary>
     /// Interaction logic for Page3.xaml
     /// </summary>
-    public partial class Page3 : UserControl
+    public partial class Settings : UserControl
     {
-        public Page3()
+        public Settings()
         {
             InitializeComponent();
         }

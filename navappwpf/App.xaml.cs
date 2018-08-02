@@ -5,7 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using navappwpf.Constants;
+using navappwpf.Helper;
 using navappwpf.ViewModels;
+using SerialPortProcess;
 
 namespace navappwpf
 {
@@ -14,15 +17,20 @@ namespace navappwpf
     /// </summary>
     public partial class App : Application
     {
+        private SerialPort _serialPort;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            log4net.Config.XmlConfigurator.Configure();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
             
-            MainWindowViewModel context = new MainWindowViewModel();
+            SetupPorts();
+            MainWindowViewModel context = new MainWindowViewModel(_serialPort.NavigationDisplay);
             Window mainWindow = new MainWindow() { DataContext = context };
-            context.SetCurrentViewModel(new Page1ViewModel(new NmeaParser.Helper.NavigationDisplay()));
+
+
+            //context.SetCurrentViewModel(new ReadingsViewModel());
             mainWindow.Show();
 
         }
@@ -30,6 +38,12 @@ namespace navappwpf
         {
             Exception ex = e.ExceptionObject as Exception;
             MessageBox.Show(ex.Message, "Thread Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void SetupPorts()
+        {
+            _serialPort = new SerialPort();
+            _serialPort.SetupPorts(ApplicationSettingHelper.GetFromApplicationSetting(Enums.ApplicationSettingKey.DataPath));
         }
     }
 }

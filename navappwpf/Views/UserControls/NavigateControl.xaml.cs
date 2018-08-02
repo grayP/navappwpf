@@ -1,4 +1,4 @@
-﻿using NmeaParser.Helper;
+﻿using NmeaParser.Navigate;
 using System.Windows;
 using System.Windows.Controls;
 

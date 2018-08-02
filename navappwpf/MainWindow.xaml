@@ -3,30 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:navappwpf"
+        xmlns:local="clr-namespace:navappwpf.Views.Navigation" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    
+        Title="Main Window 1.0" Height="500" Width="1000">
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter" />
     </Window.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="53*"/>
+            <ColumnDefinition Width="942*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
 
         </Grid.RowDefinitions>
         <Menu Grid.Row="0"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Top"
-              ItemsSource="{Binding Path=CurrentViewModel.MenuItems}" />
+              ItemsSource="{Binding Path=CurrentViewModel.MenuItems}" Grid.ColumnSpan="2" Margin="0,0,0.2,0" />
         <DockPanel Grid.Row="1"
                    x:Name="MainContent"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch"
-                   Visibility="{Binding DisplayContent, Converter={StaticResource visibilityConverter}}">
+                   Visibility="{Binding DisplayContent, Converter={StaticResource visibilityConverter}}" Grid.ColumnSpan="2" Margin="0,0,0.2,49.8" Grid.RowSpan="2">
 
             <ContentPresenter Content="{Binding CurrentViewModel}"
                                   DockPanel.Dock="Top"
@@ -34,10 +38,9 @@
                                   HorizontalAlignment="Stretch" />
 
         </DockPanel>
-        <!--<StackPanel Grid.Row="2" Margin="5" Orientation="Horizontal">
-            <Button Content="Back" Command="{x:Static NavigationCommands.BrowseBack}"/>
-            <Button Content="Forward" Command="{x:Static NavigationCommands.BrowseForward}"  />
+        <StackPanel Grid.Row="2" Margin="212.929,5.2,266.2,4.8" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
+            <local:NavBar />
 
-        </StackPanel>-->
+        </StackPanel>
     </Grid>
 </Window>

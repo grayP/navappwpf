@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using navappwpf.Common;
-using NmeaParser.Helper;
+using NmeaParser.Navigate;
 
 namespace navappwpf.ViewModels
 {
@@ -20,25 +16,51 @@ namespace navappwpf.ViewModels
         public NavigationDisplay Navigatedisplay { get { return _navigate; } set { SetProperty(ref _navigate, value); } }
 
 
+
         public IDispatcher Dispatcher { get; set; }
         public ViewModelBase(IDispatcher dispatcher)
         {
             this.Dispatcher = dispatcher;
         }
-
-          
-        public ViewModelBase()
-        {
-
-        }
-
- 
+      
 
         private DelegateCommand _nextCommand { get; set; }
         public ICommand NextCommand { get { if (_nextCommand == null) { _nextCommand = new DelegateCommand(ExecuteNextCommand, CanExecuteNextCommand); } return _nextCommand; } }
 
         private DelegateCommand _previousCommand { get; set; }
         public ICommand PreviousCommand { get { if (_previousCommand == null) { _previousCommand = new DelegateCommand(ExecutePreviousCommand, CanExecutePreviousCommand); } return _previousCommand; } }
+        private DelegateCommand _dirSpeedCommand { get; set; }
+        public ICommand DirSpeedCommand { get { if (_dirSpeedCommand == null) { _dirSpeedCommand = new DelegateCommand(ExecuteDirSpeedCommand, CanExecuteDirSpeedCommand); } return _dirSpeedCommand; } }
+
+        private DelegateCommand _navCommand { get; set; }
+        public ICommand NavCommand { get { if (_navCommand == null) { _navCommand = new DelegateCommand(ExecuteNavCommand, CanExecuteNavCommand); } return _navCommand; } }
+        private DelegateCommand _windCommand { get; set; }
+        public ICommand WindCommand { get { if (_windCommand == null) { _windCommand = new DelegateCommand(ExecuteWindCommand, CanExecuteWindCommand); } return _windCommand; } }
+        private DelegateCommand _settingCommand { get; set; }
+        public ICommand SettingCommand { get { if (_settingCommand == null) { _settingCommand = new DelegateCommand(ExecuteSettingsCommand, CanExecuteSettingsCommand); } return _settingCommand; } }
+        private DelegateCommand _trendCommand { get; set; }
+        public ICommand TrendCommand { get { if (_trendCommand == null) { _trendCommand = new DelegateCommand(ExecuteTrendCommand, CanExecuteTrendCommand); } return _trendCommand; } }
+
+        public virtual bool CanExecuteTrendCommand()
+        { return true; }
+
+        public virtual bool CanExecuteDirSpeedCommand()
+        {
+            return true;
+        }
+
+        public virtual bool CanExecuteWindCommand()
+        {
+            return true;
+        }
+        public virtual bool CanExecuteSettingsCommand()
+        {
+            return true;
+        }
+        public virtual bool CanExecuteNavCommand()
+        {
+            return true;
+        }
 
         public virtual bool CanExecuteNextCommand()
         {
@@ -64,7 +86,6 @@ namespace navappwpf.ViewModels
                 }));
             }
         }
-
         /// <summary>
         /// Show progress/busy indicator with text
         /// </summary>
@@ -80,6 +101,77 @@ namespace navappwpf.ViewModels
             }
         }
 
+        protected void UpdateData()
+        {
+            if (Dispatcher != null)
+            {
+                Dispatcher.BeginInvoke((Action)(delegate
+                {
+                    Navigatedisplay.FillData();
+                }));
+            }
+        }
+
+
+        public virtual void ExecuteWindCommand()
+        {
+            ExecuteActionInBackground(
+                () =>
+                {
+                    SaveModel();
+                    Dispose();
+                },
+                () => { SetCurrentViewModel(new WindViewModel(Navigatedisplay)); });
+        }
+        public virtual void ExecuteDirSpeedCommand()
+        {
+            ExecuteActionInBackground(
+               () =>
+               {
+                   SaveModel();
+                   Dispose();
+               },
+               () =>
+               {
+                   SetCurrentViewModel(new DirSpeedViewModel(Navigatedisplay));
+               });
+        }
+        public virtual void ExecuteNavCommand()
+        {
+            ExecuteActionInBackground(
+                () =>
+                {
+                    SaveModel();
+                    Dispose();
+                },
+                () =>
+                {
+                    SetCurrentViewModel(new ReadingsViewModel(Navigatedisplay));
+                });
+        }
+
+        public virtual void ExecuteTrendCommand()
+        {
+            ExecuteActionInBackground(
+                () =>
+                {
+                    SaveModel();
+                    Dispose();
+                },
+                () => { SetCurrentViewModel(new TrendViewModel(Navigatedisplay)); });
+        }
+
+        public virtual void ExecuteSettingsCommand()
+        {
+            ExecuteActionInBackground(
+                () =>
+                {
+                    SaveModel();
+                    Dispose();
+                },
+                () => { SetCurrentViewModel(new SettingsViewModel(Navigatedisplay)); });
+        }
+
         public virtual void ExecutePreviousCommand()
         {
             ExecuteActionInBackground(
@@ -87,8 +179,8 @@ namespace navappwpf.ViewModels
                 {
                     SaveModel();
                     Dispose();
-                },// save model to database
-                () => { SetCurrentViewModel(GetPreviousViewModel(this)); });// goto next view
+                },
+                () => { SetCurrentViewModel(GetPreviousViewModel(this)); });
         }
 
 
@@ -101,7 +193,7 @@ namespace navappwpf.ViewModels
                     SaveModel();
                     Dispose();
                 },// save model to database
-                () => {SetCurrentViewModel(GetNextViewModel(this)); });// goto next view
+                () => { SetCurrentViewModel(GetNextViewModel(this)); });// goto next view
         }
 
         public ViewModelBase GetNextViewModel(ViewModelBase currentViewModel)
@@ -110,33 +202,33 @@ namespace navappwpf.ViewModels
             /***********************/
             /* 1General Navigation */
             /***********************/
-            if (type == typeof(Page1ViewModel))
+            if (type == typeof(ReadingsViewModel))
             {
                 return new WindViewModel(Navigatedisplay);
             }
-            else if (type == typeof(WindViewModel) || type==typeof(Page3))
+            else if (type == typeof(WindViewModel) || type == typeof(SettingsViewModel))
             {
-                return new Page3(Navigatedisplay);
+                return new SettingsViewModel(Navigatedisplay);
             }
 
             else
-                return new Page1ViewModel(Navigatedisplay);
+                return new ReadingsViewModel(Navigatedisplay);
         }
 
 
         public ViewModelBase GetPreviousViewModel(ViewModelBase currentViewModel)
         {
             Type type = currentViewModel.GetType();
-            if (type == typeof(Page1ViewModel)  || type == typeof(WindViewModel))
+            if (type == typeof(ReadingsViewModel) || type == typeof(WindViewModel))
             {
-                return new Page1ViewModel(Navigatedisplay);
+                return new ReadingsViewModel(Navigatedisplay);
             }
-            else if (type == typeof(Page3))
+            else if (type == typeof(SettingsViewModel))
             {
                 return new WindViewModel(Navigatedisplay);
             }
             else
-                return new Page1ViewModel(Navigatedisplay);
+                return new ReadingsViewModel(Navigatedisplay);
         }
 
 
@@ -230,9 +322,19 @@ namespace navappwpf.ViewModels
 
         public virtual void SaveModel()
         {
+            SaveSetting(Navigatedisplay.NavReadings.WindDirection, Constants.Constants.wind);
+            SaveSetting(Navigatedisplay.Alpha.AlphaCogNow, Constants.Constants.AlphaCogNow);
+            SaveSetting(Navigatedisplay.Alpha.AlphaCogFast, Constants.Constants.AlphaCogFast);
+            SaveSetting(Navigatedisplay.Alpha.AlphaCogSlow, Constants.Constants.AlphaCogSlow);
+
 
         }
 
+        private void SaveSetting(double value, string key)
+        {
+            if (value > 0.0)
+                Helper.ApplicationSettingHelper.SaveApplicationSetting(value.ToString(), key);
+        }
 
         #region Dispose
         /// <summary>

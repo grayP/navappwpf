@@ -1,15 +1,16 @@
-﻿
+﻿using System;
 using navappwpf.Common;
-using NmeaParser.Helper;
+using NmeaParser.Navigate;
 
 namespace navappwpf.ViewModels
 {
-    public class Page3 : ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
-        public Page3(NavigationDisplay navigateDisplay) : base(new DispatcherWrapper())
+        public SettingsViewModel(NavigationDisplay navigateDisplay) : base(new DispatcherWrapper())
         {
             Navigatedisplay = navigateDisplay;
         }
+
         public override void ExecutePreviousCommand()
         {
             base.ExecutePreviousCommand();

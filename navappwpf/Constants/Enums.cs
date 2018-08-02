@@ -10,9 +10,8 @@ namespace navappwpf.Constants
     {
         public enum ApplicationSettingKey
         {
-            LocalMagDeviation
-
+            LocalMagDeviation,
+            DataPath
         }
-
-    }
+      }
 }

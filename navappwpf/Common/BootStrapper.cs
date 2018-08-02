@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using navappwpf.Common.Ioc;
-using NmeaParser.Helper;
+using NmeaParser.Navigate;
 
 namespace navappwpf.Common
 {

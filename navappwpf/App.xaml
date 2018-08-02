@@ -6,8 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/navappwpf;component/Presentation/ResourceDictionary/DataTemplate.xaml" />
-                <ResourceDictionary Source="/navappwpf;component/Presentation/ResourceDictionary/Style.xaml" />
+                <ResourceDictionary Source="packages/Presentation/ResourceDictionary/DataTemplate.xaml" />
+                <ResourceDictionary Source="packages/Presentation/ResourceDictionary/Style.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
