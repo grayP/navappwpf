@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="navappwpf.Views.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:navappwpf.Views.Navigation"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="400">
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top">
+                <Border Style="{StaticResource ResourceKey=BlueBorder}">
+                    <TextBlock Text="Settings" Style="{StaticResource ResourceKey=BlueLabel}"/>
+                </Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0"
+                                Grid.Row="0" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label Content="Immediate" HorizontalAlignment="Center" Style="{StaticResource ResourceKey=SettingLabel}" />
+                            <TextBox 
+                            Text="{Binding Path=Navigatedisplay.Alpha.AlphaCogNow}" 
+                            DockPanel.Dock="Top" 
+                            TextAlignment="Center" 
+                            Width="40" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
+                            <Slider x:Name="AlphaNow"  VerticalAlignment="Center"
+                            Maximum="1" 
+                            TickPlacement="BottomRight" 
+                            TickFrequency=".1"
+                            IsSnapToTickEnabled="True" 
+                                Value="{Binding Path=Navigatedisplay.Alpha.AlphaCogNow}"/>
+                        </StackPanel>
+                    </Grid>
+
+                <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0"
+                                Grid.Row="0" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label Content="Fast" HorizontalAlignment="Center" 
+                               Style="{StaticResource ResourceKey=SettingLabel}"    />
+                            <TextBox 
+                            Text="{Binding Path=Navigatedisplay.Alpha.AlphaCogFast}" 
+                            DockPanel.Dock="Top" 
+                            TextAlignment="Center" 
+                            Width="40" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
+                            <Slider x:Name="AlphaFast" Margin="10" VerticalAlignment="Center"
+                            Maximum=".5" 
+                            Minimum=".05"
+                            TickPlacement="BottomRight" 
+                            TickFrequency=".05"
+                            IsSnapToTickEnabled="True" 
+                                Value="{Binding Path=Navigatedisplay.Alpha.AlphaCogFast}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                          </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0"
+                                Grid.Row="0" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label Content="Slow" HorizontalAlignment="Center" 
+                               Style="{StaticResource ResourceKey=SettingLabel}"    />
+                            <TextBox 
+                            Text="{Binding Path=Navigatedisplay.Alpha.AlphaCogSlow}" 
+                            DockPanel.Dock="Top" 
+                            TextAlignment="Center" 
+                            Width="40" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="0"  
+                                Grid.Row="1" Margin="10" Orientation="Vertical">
+                            <Slider x:Name="AlphaSlow" VerticalAlignment="Center"
+                            Maximum=".1" 
+                            Minimum=".01"
+                            TickPlacement="BottomRight" 
+                            TickFrequency=".01"
+                            IsSnapToTickEnabled="True" 
+                                Value="{Binding Path=Navigatedisplay.Alpha.AlphaCogSlow}"/>
+                        </StackPanel>
+
+                    </Grid>
+
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+
+
+
+
+    </DockPanel>
+</UserControl>

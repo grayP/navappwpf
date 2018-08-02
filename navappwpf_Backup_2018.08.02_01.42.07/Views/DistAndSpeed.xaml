@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="navappwpf.Views.DistAndSpeed"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:navappwpf.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top">
+                <Border Style="{StaticResource ResourceKey=BlueBorder}">
+                    <TextBlock Text="Direction And Distance" Style="{StaticResource ResourceKey=BlueLabel}"/>
+                </Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ResourceKey=NavigationLabel}">
+                        <Run Text="Delta(m)" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+                    <TextBlock Grid.Row="0"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.CourseReadings.Distance, StringFormat={}{0}m}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource ResourceKey=NavigationLabel}">
+                        <Run Text="Xtrack" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+                    <TextBlock Grid.Row="1"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.CourseReadings.XTrack, StringFormat={}{0}m}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+                    <TextBlock 
+                        Grid.Row="2" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}"  >
+                        <Run Text="BTW" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Row="2"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.CourseReadings.BearingToWayPoint, StringFormat={}{0}°}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+                    <TextBlock 
+                        Grid.Row="3" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}" >
+                        <Run Text="COG" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+                    <TextBlock Grid.Row="3"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.NavReadings.CogNow, StringFormat={}{0}°}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+                    <TextBlock 
+                        Grid.Row="4" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}">
+                        <Run Text="Time To Turn (sec)" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Row="4"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.CourseReadings.SecondsToTurn}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+                    <TextBlock 
+                        Grid.Row="5" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}">
+                        <Run Text="Next Leg" Style="{StaticResource ResourceKey=NavLabel}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Row="5"
+                        Grid.Column="1"
+                        Text="{Binding Navigatedisplay.CourseReadings.NextCourse, StringFormat={}{0}°}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+
+
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</UserControl>

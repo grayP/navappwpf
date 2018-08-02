@@ -65,9 +65,9 @@ namespace navappwpf.ViewModels
 
         private void StartTimer()
         {
-            var Timer = new System.Timers.Timer()
+            var Timer = new Timer()
             {
-                Interval = 2000,
+                Interval = 1000,
                 Enabled = true,
                 AutoReset=true
 

@@ -1,0 +1,289 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Device.Location;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using NmeaParser.Constants;
+using NmeaParser.Helper;
+using NmeaParser.Models;
+using NmeaParser.Nmea.Gps;
+using Telerik.Windows.Data;
+
+namespace NmeaParser.Navigate
+{
+    public class NavigationDisplay : INotifyPropertyChanged
+    {
+        public bool DeviceStarted { get; set; }
+        public string LocalDeviation { get; set; }
+        private double LocalDev = 0.0;
+        private double LastLatitude = 0;
+        private double LastLongitude = 0;
+        private double LastLatitude2 = 0;
+        private double LastLongitude2 = 0;
+        private double LastLatitude3 = 0;
+        private double LastLongitude3 = 0;
+        private RadObservableCollection<ChartBusinessObject> collection;
+        private int _yAxisMaximum;
+        public int YAxisMaximum
+        {
+            get { return _yAxisMaximum; }
+            set
+            {
+                if (this.YAxisMaximum != value)
+                {
+                    this._yAxisMaximum = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        private int _yAxisMinimum;
+        public int YAxisMinimum
+        {
+            get { return _yAxisMinimum; }
+            set
+            {
+                if (this.YAxisMinimum != value)
+                {
+                    this._yAxisMinimum = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        //  private GeoCoordinate lastCoordinate;
+        private TimeSpan lastTimeSpan;
+        private Queue<Gpgga> NavMessages = new Queue<Gpgga>(1001);
+        public Queue<TackReading> TackReadings { get; set; } = new Queue<TackReading>();
+        private NavigationReadings _navReadings = new NavigationReadings();
+        private AlphaValues _alphaValues;
+        private CourseReading _courseReadings;
+
+        public NavigationDisplay()
+        {
+            NavReadings = new NavigationReadings();
+            Alpha = new AlphaValues();
+            CourseReadings = new CourseReading();
+            FillData(TackReadings);
+
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #region Properties
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public NavigationReadings NavReadings
+        {
+            get { return this._navReadings; }
+            set
+            {
+                if (value != this._navReadings)
+                {
+                    this._navReadings = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public CourseReading CourseReadings
+        {
+            get { return this._courseReadings; }
+            set
+            {
+                if (value != this._courseReadings)
+                {
+                    this._courseReadings = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public AlphaValues Alpha
+        {
+            get { return this._alphaValues; }
+            set
+            {
+                if (value != this._alphaValues)
+                {
+                    this._alphaValues = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private RadObservableCollection<ChartBusinessObject> _chartData;
+        public RadObservableCollection<ChartBusinessObject> ChartData
+        {
+            get
+            {
+                return this._chartData;
+            }
+            set
+            {
+                if (this._chartData != value)
+                {
+                    this._chartData = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+        public class TackReading
+        {
+            public DateTime TimeOfReading { get; set; }
+            public Tack CurrentTack { get; set; }
+            public double ReadingNow { get; set; }
+            public double ReadingShort { get; set; }
+            public double ReadingLong { get; set; }
+            public double ReadingShortPast { get; set; }
+            public TackReading(NavigationReadings navReadings)
+            {
+                TimeOfReading = navReadings.TimeOfReading;
+                CurrentTack = navReadings.Tack;
+                ReadingNow = navReadings.CogNow;
+                ReadingShort = navReadings.CogFast;
+                ReadingLong = navReadings.CogSlow;
+            }
+        }
+        public void ParseNmeaMessage(Gpgga message)
+        {
+            if (NavMessages.Count > 1000) NavMessages.Dequeue();
+            NavMessages.Enqueue(message);
+            if (Math.Abs(LastLatitude) > 0)
+            {
+                NavReadings.LastPosition = new GeoCoordinate(message.Latitude, message.Longitude);
+                var bearing = Trig.GetBearing(LastLatitude3, LastLongitude3, message.Latitude, message.Longitude, LocalDev);
+                NavReadings.TimeOfReading = CreateTime(message.FixTime);
+                var speed = FindSogFromQueue(0, 15);
+                NavReadings.SetTheCogValues(bearing, Alpha);
+                NavReadings.SetTheSogValues(speed);
+                NavReadings.SetTack(bearing);
+                ManageQueue(NavReadings);
+                lastTimeSpan = message.FixTime;
+            }
+            LastLatitude3 = LastLatitude2;
+            LastLongitude3 = LastLongitude2;
+            LastLatitude2 = LastLatitude;
+            LastLongitude2 = LastLongitude;
+
+            LastLatitude = message.Latitude;
+            LastLongitude = message.Longitude;
+        }
+
+
+
+        public void GetCourseCorrections(Course course)
+        {
+            try
+            {
+                var xCoord = course.WhereShouldIBe(NavReadings.LastPosition);
+                CourseReadings.Distance = Math.Round(xCoord.GetDistanceTo(NavReadings.LastPosition), 0);
+                CourseReadings.BearingToWayPoint = Math.Round(Trig.GetBearing(NavReadings.LastPosition.Latitude, NavReadings.LastPosition.Longitude, course.EndWayPoint.Latitude, course.EndWayPoint.Longitude, double.Parse(course.LocalDeviation)), 0);
+                CourseReadings.Turn = Math.Round((CourseReadings.BearingToWayPoint - NavReadings.CogNow + 180 + 360) % 360 - 180, 0);
+                CourseReadings.SecondsToTurn = (int)xCoord.Altitude;
+                CourseReadings.NextCourse = (int)xCoord.HorizontalAccuracy;
+                CourseReadings.XTrack = xCoord.Speed;
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void ManageQueue(NavigationReadings navReadings)
+        {
+            if (TackReadings.Count > 1000)
+                TackReadings.Dequeue();
+
+            navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack).ReadingLong;
+            var NewReading = new TackReading(navReadings);
+
+            TackReadings.Enqueue(NewReading);
+            AddData(NewReading);
+            SetMaxMin();
+        }
+
+        private void AddData(TackReading newReading)
+        {
+            if (collection.Count > 120) collection.RemoveAt(0);
+            collection.Add(new ChartBusinessObject()
+            {
+                Category = newReading.TimeOfReading,
+                Value = newReading.ReadingShort,
+                LongValue = newReading.ReadingLong
+            });
+        }
+
+        private void SetMaxMin()
+        {
+            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x?.Value), 10.0) - 20;
+            if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
+            YAxisMaximum = YAxisMinimum + 20;
+            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.Value), 20.0) + 20;
+            if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
+
+        }
+
+        public void FillData()
+        {
+          //  Dispatcher.BeginInvoke((Action)delegate ()
+          //  {
+                collection = new RadObservableCollection<ChartBusinessObject>();
+                foreach (var tackReading in TackReadings)
+                {
+                    collection.Add(new ChartBusinessObject()
+                    {
+                        Category = tackReading.TimeOfReading,
+                        Value = tackReading.ReadingShort,
+                        LongValue = tackReading.ReadingLong
+                    });
+                }
+                this.ChartData = collection;
+           // });
+        }
+
+        private void FillData(Queue<NavigationDisplay.TackReading> tackReadings)
+        {
+            collection = new RadObservableCollection<ChartBusinessObject>();
+            foreach (var tackReading in tackReadings)
+            {
+                collection.Add(new ChartBusinessObject()
+                {
+                    Category = tackReading.TimeOfReading,
+                    Value = tackReading.ReadingShort,
+                    LongValue = tackReading.ReadingLong
+                });
+            }
+            this.ChartData = collection;
+        }
+
+         public static DateTime CreateTime(TimeSpan fixTime)
+        {
+            var result= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, fixTime.Hours, fixTime.Minutes, fixTime.Seconds).ToLocalTime();
+            return result.Day > DateTime.Now.Day ? result.AddDays(-1) : result;
+        }
+        private double FindSogFromQueue(int start, int n)
+        {
+            if (NavMessages.Count() < n) return 0;
+            var lastN = NavMessages.Reverse().Take(n).ToList();
+            var firstPoint = lastN[start];
+            var lastPoint = lastN[n - 1];
+
+            var firstCoord = new GeoCoordinate(firstPoint.Latitude, firstPoint.Longitude);
+            var lastCoord = new GeoCoordinate(lastPoint.Latitude, lastPoint.Longitude);
+            return Math.Round(firstCoord.GetDistanceTo(lastCoord) / (firstPoint.FixTime - lastPoint.FixTime).TotalSeconds * 3.6 / 1.852 * 100, 0);
+        }
+
+        public bool IsGoodMessage(Gpgga newReading)
+        {
+            return newReading.NumberOfSatellites >= 3 && Math.Abs(newReading.Latitude) > 0;
+        }
+    }
+    //public class Reading
+    //{
+    //    public double SOG { get; set; }
+    //    public double COG { get; set; }
+    //    public DateTime TimeOfReading { get; set; }
+    //}
+}

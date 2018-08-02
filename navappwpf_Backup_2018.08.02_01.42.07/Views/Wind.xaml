@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="navappwpf.Views.Wind"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top">
+                <Border Style="{StaticResource ResourceKey=BlueBorder}">
+                    <TextBlock Text="Wind" Style="{StaticResource ResourceKey=BlueLabel}"/>
+                </Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0"
+                                Grid.Row="0" Margin="10">
+                        <TextBox 
+                            Text="{Binding Path=Navigatedisplay.NavReadings.WindDirection}" 
+                            DockPanel.Dock="Top" 
+                            TextAlignment="Center" 
+                            Width="40" />
+
+                        <Slider x:Name="WindDirection" VerticalAlignment="Center"
+                            Maximum="360" 
+                            TickPlacement="BottomRight" 
+                            TickFrequency="10"
+                            IsSnapToTickEnabled="True" 
+                                Value="{Binding Path=Navigatedisplay.NavReadings.WindDirection}"/>
+                    </DockPanel>
+
+
+
+                </Grid>
+
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+  </UserControl>
