@@ -23,13 +23,11 @@ namespace navappwpf
         {
             log4net.Config.XmlConfigurator.Configure();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            App.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
-            
+            App.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
             SetupPorts();
             MainWindowViewModel context = new MainWindowViewModel(_serialPort.NavigationDisplay);
             Window mainWindow = new MainWindow() { DataContext = context };
-
-
             //context.SetCurrentViewModel(new ReadingsViewModel());
             mainWindow.Show();
 

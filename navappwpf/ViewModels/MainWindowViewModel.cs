@@ -14,15 +14,17 @@ namespace navappwpf.ViewModels
         public string BusyContent { get { return _busyContent; } set { SetProperty(ref _busyContent, value); } }
         public ViewModelBase CurrentViewModel { get { return _currentViewModel; } protected set { SetProperty(ref _currentViewModel, value); } }
 
-        private ProcessGps _processGps;
-        public ProcessGps ProcessGPS { get { return _processGps; }set { SetProperty(ref _processGps, value); } }
+        //private ProcessGps _processGps;
+        //public ProcessGps ProcessGPS { get { return _processGps; }set { SetProperty(ref _processGps, value); } }
 
         public MainWindowViewModel(NavigationDisplay navigateDisplay) : base(new DispatcherWrapper())
         {
             Navigatedisplay = navigateDisplay;
             ExecuteNavCommand();
             SetInitialValues();
-         //   ProcessGPS = new ProcessGps(navigateDisplay);
+            //   ProcessGPS = new ProcessGps(navigateDisplay);
+           // SetupPorts();
+
         }
 
         private void SetInitialValues()

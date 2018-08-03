@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "navappwpf", "navappwpf\navappwpf.csproj", "{357EE5CE-E535-4A04-95CB-FBBFC4BB8947}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmeaParser", "..\nmeaApp\NmeaParser\NmeaParser.csproj", "{5325235A-4CCD-443E-83FC-575088B63265}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{4276F602-B4C8-4202-8EA3-048B507F178B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortProcess", "SerialPortProcess\SerialPortProcess.csproj", "{44C89D0F-5C89-4C92-847C-D07FF0E3C9D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmeaParser", "NmeaParser_Backup_2018.08.02_01.42.07\NmeaParser.csproj", "{5325235A-4CCD-443E-83FC-575088B63265}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,6 @@ Global
 		{357EE5CE-E535-4A04-95CB-FBBFC4BB8947}.Release|Any CPU.ActiveCfg = Release|x86
 		{357EE5CE-E535-4A04-95CB-FBBFC4BB8947}.Release|x86.ActiveCfg = Release|x86
 		{357EE5CE-E535-4A04-95CB-FBBFC4BB8947}.Release|x86.Build.0 = Release|x86
-		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|x86.Build.0 = Debug|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Release|x86.ActiveCfg = Release|Any CPU
-		{5325235A-4CCD-443E-83FC-575088B63265}.Release|x86.Build.0 = Release|Any CPU
 		{4276F602-B4C8-4202-8EA3-048B507F178B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4276F602-B4C8-4202-8EA3-048B507F178B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4276F602-B4C8-4202-8EA3-048B507F178B}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -49,6 +41,14 @@ Global
 		{44C89D0F-5C89-4C92-847C-D07FF0E3C9D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{44C89D0F-5C89-4C92-847C-D07FF0E3C9D4}.Release|x86.ActiveCfg = Release|Any CPU
 		{44C89D0F-5C89-4C92-847C-D07FF0E3C9D4}.Release|x86.Build.0 = Release|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Debug|x86.Build.0 = Debug|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Release|x86.ActiveCfg = Release|Any CPU
+		{5325235A-4CCD-443E-83FC-575088B63265}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
