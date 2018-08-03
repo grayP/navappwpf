@@ -34,13 +34,13 @@
                         <TextBlock Text="COG" FontSize="16" Margin="5,0,0,0" />
                         <telerik:RadCartesianChart Palette="Windows8" 
                                                    MinHeight="{Binding MinHeight}">
-                            <telerik:LineSeries CategoryBinding="Category" Background="Red"  ValueBinding="Value"  ItemsSource="{Binding NavigationDisplay.ChartData}"  />
-                            <telerik:LineSeries CategoryBinding="Category" Background="green" ValueBinding="LongValue" ItemsSource="{Binding NavigationDisplay.ChartData}"  />
+                            <telerik:LineSeries Stroke="Red" CategoryBinding="Category" ValueBinding="Short"  ItemsSource="{Binding NavigationDisplay.ChartData}"  />
+                            <telerik:LineSeries Stroke="Green" CategoryBinding="Category" ValueBinding="Long" ItemsSource="{Binding NavigationDisplay.ChartData}"  />
                             <telerik:RadCartesianChart.HorizontalAxis>
                                 <telerik:DateTimeContinuousAxis MajorStepUnit="Second"
                                                 LabelInterval="2"
                                                 LabelFormat="HH:mm:ss" FontFamily="Segoe UI"
-                                                PlotMode="OnTicks" 
+                                                PlotMode="OnTicks"
                                                   />
 
                             </telerik:RadCartesianChart.HorizontalAxis>
@@ -71,7 +71,7 @@
                         Grid.Row="0" 
                         Grid.Column="0" 
                         Style="{StaticResource ResourceKey=NavigationLabel}"
-                            Foreground="Red">
+                            Foreground="Black">
                             <Run Text="Now" Style="{StaticResource ResourceKey=NavLabel}" />
                         </TextBlock>
                         
@@ -79,19 +79,21 @@
                         Grid.Column="1"                                                                                           
                         Text="{Binding NavigationDisplay.NavReadings.CogNow, StringFormat=\{0\}°}" 
                         Style="{StaticResource ResourceKey=NavigationValue}"
-                        Foreground="Red"
+                        
                                    />
                         <TextBlock 
                         Grid.Row="0" 
                         Grid.Column="2" 
-                        Style="{StaticResource ResourceKey=NavigationLabel}">
+                        Style="{StaticResource ResourceKey=NavigationLabel}"
+                            Foreground="Red">
                             <Run Text="Fast" Style="{StaticResource ResourceKey=NavLabel}" />
                         </TextBlock>
 
                         <TextBlock Grid.Row="0"
                         Grid.Column="3"
                         Text="{Binding NavigationDisplay.NavReadings.CogFast, StringFormat=\{0\}°}" 
-                        Style="{StaticResource ResourceKey=NavigationValue}"/>
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                                   Foreground="Red"/>
 
                         <TextBlock 
                         Grid.Row="0" 
