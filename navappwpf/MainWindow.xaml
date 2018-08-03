@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:navappwpf.Views.Navigation" 
         mc:Ignorable="d"
-        Title="Main Window 1.0" Height="500" Width="1000">
+        Title="Bluebottle Systems Inc" Height="600" Width="1000">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter" />

@@ -14,10 +14,6 @@ namespace navappwpf.ViewModels
     {
         private NavigationDisplay _navigationDisplay;
         public NavigationDisplay NavigationDisplay { get { return _navigationDisplay; } set { SetProperty(ref _navigationDisplay, value); } }
-        private DateTime _lastDate;
-        //    private DateTime? alignmentDate;
-
-
         private int _minHeight;
         public int MinHeight
         {
@@ -31,7 +27,6 @@ namespace navappwpf.ViewModels
                 }
             }
         }
-
         private RadObservableCollection<ChartBusinessObject> _data;
         public RadObservableCollection<ChartBusinessObject> Data
         {
@@ -49,63 +44,15 @@ namespace navappwpf.ViewModels
             }
         }
 
-        private void UpdateChartData()
-        {
-            Dispatcher.BeginInvoke((Action)delegate ()
-              {
-                  NavigationDisplay.FillData();
-              });
-        }
-
-
+  
         public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
         {
             _navigationDisplay = navigationDisplay;
-            _minHeight = 300;
-            StartTimer();
-        }
-
-        private void StartTimer()
-        {
-            var Timer = new Timer()
-            {
-                Interval = 1000,
-                Enabled = true,
-                AutoReset=true
-
-            };
-            Timer.Elapsed += Timer_Elapsed;
-            Timer.Start();
-        }
-
-        private void Timer_Elapsed(Object source, System.Timers.ElapsedEventArgs e)
-        {
-            UpdateChartData();
+           _minHeight = 300;
         }
 
 
-        //private void FillData(Queue<NavigationDisplay.TackReading> tackReadings)
-        //{
-        //    RadObservableCollection<ChartBusinessObject> collection = new RadObservableCollection<ChartBusinessObject>();
-        //    foreach (var tackReading in tackReadings)
-        //    {
-        //        this._lastDate = tackReading.TimeOfReading;
-        //        collection.Add(CreateBusinessObject(tackReading.ReadingShort, tackReading.TimeOfReading));
-        //    }
-        //    this.Data = collection;
-        //}
-        //private ChartBusinessObject CreateBusinessObject(double value, DateTime dateTime)
-        //{
-        //    ChartBusinessObject obj = new ChartBusinessObject()
-        //    {
-        //        Value = value,
-        //        Category = dateTime
-        //    };
-        //    return obj;
-        //}
-
-
-        private bool disposed;
+         private bool disposed;
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)

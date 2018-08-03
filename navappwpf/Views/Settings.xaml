@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:navappwpf.Views.Navigation"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="500" d:DesignWidth="400">
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Top">
             <StackPanel DockPanel.Dock="Top">
@@ -14,6 +14,7 @@
                 </Border>
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -44,7 +45,7 @@
                         </StackPanel>
                     </Grid>
 
-                <Grid Grid.Row="2">
+                    <Grid Grid.Row="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
@@ -70,11 +71,12 @@
                                 Value="{Binding Path=Navigatedisplay.Alpha.AlphaCogFast}"/>
                         </StackPanel>
                     </Grid>
+
                     <Grid Grid.Row="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
-                          </Grid.RowDefinitions>
+                        </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0"
                                 Grid.Row="0" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Label Content="Slow" HorizontalAlignment="Center" 
@@ -94,6 +96,33 @@
                             TickFrequency=".01"
                             IsSnapToTickEnabled="True" 
                                 Value="{Binding Path=Navigatedisplay.Alpha.AlphaCogSlow}"/>
+                        </StackPanel>
+
+                    </Grid>
+                    <Grid Grid.Row="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0"
+                                Grid.Row="0" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label Content="Number Of Readings" HorizontalAlignment="Center" 
+                               Style="{StaticResource ResourceKey=SettingLabel}"    />
+                            <TextBox 
+                            Text="{Binding Path=Navigatedisplay.NumReadings}" 
+                            DockPanel.Dock="Top" 
+                            TextAlignment="Center" 
+                            Width="40" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="0"  
+                                Grid.Row="1" Margin="10" Orientation="Vertical">
+                            <Slider x:Name="NumReadings" VerticalAlignment="Center"
+                            Maximum="300" 
+                            Minimum="30"
+                            TickPlacement="BottomRight" 
+                            TickFrequency="30"
+                            IsSnapToTickEnabled="True" 
+                                Value="{Binding Path=Navigatedisplay.NumReadings}"/>
                         </StackPanel>
 
                     </Grid>

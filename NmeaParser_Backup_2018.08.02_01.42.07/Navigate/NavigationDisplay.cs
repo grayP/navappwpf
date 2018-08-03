@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Device.Location;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using NmeaParser.Constants;
 using NmeaParser.Helper;
 using NmeaParser.Models;
@@ -14,16 +15,17 @@ namespace NmeaParser.Navigate
 {
     public class NavigationDisplay : INotifyPropertyChanged
     {
+        private int messagecounter = 0;
         public bool DeviceStarted { get; set; }
         public string LocalDeviation { get; set; }
-        private double LocalDev = 0.0;
+        private readonly double LocalDev = 0.0;
         private double LastLatitude = 0;
         private double LastLongitude = 0;
         private double LastLatitude2 = 0;
         private double LastLongitude2 = 0;
         private double LastLatitude3 = 0;
         private double LastLongitude3 = 0;
-        private RadObservableCollection<ChartBusinessObject> collection;
+        private RadObservableCollection<ChartBusinessObject> collection = new RadObservableCollection<ChartBusinessObject>();
         private int _yAxisMaximum;
         public int YAxisMaximum
         {
@@ -71,14 +73,26 @@ namespace NmeaParser.Navigate
         private NavigationReadings _navReadings = new NavigationReadings();
         private AlphaValues _alphaValues;
         private CourseReading _courseReadings;
+        private int _numReadings;
+        public int NumReadings
+        {
+            get { return this._numReadings; }
+            set
+            {
+                if (value != this._numReadings)
+                {
+                    this._numReadings = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public NavigationDisplay()
         {
             NavReadings = new NavigationReadings();
             Alpha = new AlphaValues();
             CourseReadings = new CourseReading();
-            FillData(TackReadings);
-
+            // FillData(TackReadings);
         }
         public event PropertyChangedEventHandler PropertyChanged;
         #region Properties
@@ -163,6 +177,8 @@ namespace NmeaParser.Navigate
         {
             if (NavMessages.Count > 1000) NavMessages.Dequeue();
             NavMessages.Enqueue(message);
+           // Queue<Gpgga> orderedQueue = new Queue<Gpgga>(NavMessages.OrderBy(z=>z.FixTime));
+
             if (Math.Abs(LastLatitude) > 0)
             {
                 NavReadings.LastPosition = new GeoCoordinate(message.Latitude, message.Longitude);
@@ -172,20 +188,20 @@ namespace NmeaParser.Navigate
                 NavReadings.SetTheCogValues(bearing, Alpha);
                 NavReadings.SetTheSogValues(speed);
                 NavReadings.SetTack(bearing);
-                ManageQueue(NavReadings);
                 lastTimeSpan = message.FixTime;
+
+                //only start plotting once three messages come through
+                ManageQueue(NavReadings);
             }
-            LastLatitude3 = LastLatitude2;
-            LastLongitude3 = LastLongitude2;
-            LastLatitude2 = LastLatitude;
-            LastLongitude2 = LastLongitude;
+            //Set past message values
+                LastLatitude3 = LastLatitude2;
+                LastLongitude3 = LastLongitude2;
+                LastLatitude2 = LastLatitude;
+                LastLongitude2 = LastLongitude;
+                LastLatitude = message.Latitude;
+                LastLongitude = message.Longitude;
 
-            LastLatitude = message.Latitude;
-            LastLongitude = message.Longitude;
         }
-
-
-
         public void GetCourseCorrections(Course course)
         {
             try
@@ -198,9 +214,9 @@ namespace NmeaParser.Navigate
                 CourseReadings.NextCourse = (int)xCoord.HorizontalAccuracy;
                 CourseReadings.XTrack = xCoord.Speed;
             }
-            catch
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -210,8 +226,8 @@ namespace NmeaParser.Navigate
                 TackReadings.Dequeue();
 
             navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack).ReadingLong;
-            var NewReading = new TackReading(navReadings);
 
+            var NewReading = new TackReading(navReadings);
             TackReadings.Enqueue(NewReading);
             AddData(NewReading);
             SetMaxMin();
@@ -219,62 +235,32 @@ namespace NmeaParser.Navigate
 
         private void AddData(TackReading newReading)
         {
-            if (collection.Count > 120) collection.RemoveAt(0);
+            messagecounter += 1;
+            if (collection.Count > Math.Max(NumReadings,30)) collection.RemoveAt(0);
             collection.Add(new ChartBusinessObject()
             {
-                Category = newReading.TimeOfReading,
-                Value = newReading.ReadingShort,
-                LongValue = newReading.ReadingLong
+                Counter=messagecounter,
+                ReadingDateTime = newReading.TimeOfReading,
+                ShortValue = newReading.ReadingShort,
+                LongValue = newReading.ReadingLong,
+                ImmediateValue= newReading.ReadingNow
             });
-            MinXaxis = collection[0].Category;
+            this.ChartData = collection;
         }
 
         private void SetMaxMin()
         {
-            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x?.Value), 10.0) - 20;
+            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x.ShortValue), 10.0) - 20;
             if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
             YAxisMaximum = YAxisMinimum + 20;
-            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.Value), 20.0) + 20;
+            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.ShortValue), 20.0) + 20;
             if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
-
+            MinXaxis = collection.OrderBy(x => x.ReadingDateTime).FirstOrDefault().ReadingDateTime;
         }
 
-        public void FillData()
+        public static DateTime CreateTime(TimeSpan fixTime)
         {
-          //  Dispatcher.BeginInvoke((Action)delegate ()
-          //  {
-                collection = new RadObservableCollection<ChartBusinessObject>();
-                foreach (var tackReading in TackReadings)
-                {
-                    collection.Add(new ChartBusinessObject()
-                    {
-                        Category = tackReading.TimeOfReading,
-                        Value = tackReading.ReadingShort,
-                        LongValue = tackReading.ReadingLong
-                    });
-                }
-                this.ChartData = collection;
-           // });
-        }
-
-        private void FillData(Queue<NavigationDisplay.TackReading> tackReadings)
-        {
-            collection = new RadObservableCollection<ChartBusinessObject>();
-            foreach (var tackReading in tackReadings)
-            {
-                collection.Add(new ChartBusinessObject()
-                {
-                    Category = tackReading.TimeOfReading,
-                    Value = tackReading.ReadingShort,
-                    LongValue = tackReading.ReadingLong
-                });
-            }
-            this.ChartData = collection;
-        }
-
-         public static DateTime CreateTime(TimeSpan fixTime)
-        {
-            var result= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, fixTime.Hours, fixTime.Minutes, fixTime.Seconds).ToLocalTime();
+            var result = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, fixTime.Hours, fixTime.Minutes, fixTime.Seconds).ToLocalTime();
             return result.Day > DateTime.Now.Day ? result.AddDays(-1) : result;
         }
         private double FindSogFromQueue(int start, int n)
@@ -294,10 +280,5 @@ namespace NmeaParser.Navigate
             return newReading.NumberOfSatellites >= 3 && Math.Abs(newReading.Latitude) > 0;
         }
     }
-    //public class Reading
-    //{
-    //    public double SOG { get; set; }
-    //    public double COG { get; set; }
-    //    public DateTime TimeOfReading { get; set; }
-    //}
+
 }
