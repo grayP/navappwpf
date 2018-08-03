@@ -14,9 +14,6 @@ namespace navappwpf.ViewModels
         protected MainWindowViewModel MainWindowDataContext { get { return Application.Current.MainWindow != null ? (MainWindowViewModel)Application.Current.MainWindow.DataContext : null; } }
         private NavigationDisplay _navigate;
         public NavigationDisplay Navigatedisplay { get { return _navigate; } set { SetProperty(ref _navigate, value); } }
-
-
-
         public IDispatcher Dispatcher { get; set; }
         public ViewModelBase(IDispatcher dispatcher)
         {

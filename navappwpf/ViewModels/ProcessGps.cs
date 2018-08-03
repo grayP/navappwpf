@@ -39,27 +39,27 @@ namespace navappwpf.ViewModels
             //};
             ProcessNavigation.Setup();
             Navigatedisplay.LocalDeviation = ApplicationSettingHelper.GetFromApplicationSetting(Enums.ApplicationSettingKey.LocalMagDeviation);
-           // SetupPorts();
+            SetupPorts();
             // SetupCourse();
         }
 
-        //private void SetupPorts()
-        //{
-        //    _ports = System.IO.Ports.SerialPort.GetPortNames().OrderBy(s => s).ToList();
-        //    _portNumber = 0;
-        //    if (_ports.Any())
-        //    {
-        //        SetupDataPath();
-        //        TrialSerialPort(_portNumber);
-        //    }
-        //    else
-        //    {
-        //        if (Navigatedisplay.DeviceStarted) return;
-        //        var device = new NmeaParser.NmeaFileDevice("20180628.txt");
-        //        StartDevice(device);
-        //        Navigatedisplay.DeviceStarted = true;
-        //    }
-        //}
+        private void SetupPorts()
+        {
+            _ports = System.IO.Ports.SerialPort.GetPortNames().OrderBy(s => s).ToList();
+            _portNumber = 0;
+            if (_ports.Any())
+            {
+                SetupDataPath();
+                TrialSerialPort(_portNumber);
+            }
+            else
+            {
+                if (Navigatedisplay.DeviceStarted) return;
+                var device = new NmeaParser.NmeaFileDevice("20180628.txt");
+                StartDevice(device);
+                Navigatedisplay.DeviceStarted = true;
+            }
+        }
 
         private void TrialSerialPort(int portNumber)
         {
@@ -89,12 +89,12 @@ namespace navappwpf.ViewModels
         }
 
 
-        //internal void SetupDataPath()
-        //{
-        //    _liveData = true;
-        //    _dataTextSavePath = ApplicationSettingHelper.GetFromApplicationSetting(Enums.ApplicationSettingKey.DataPath);
-        //    Directory.CreateDirectory(_dataTextSavePath);
-        //}
+        internal void SetupDataPath()
+        {
+            _liveData = true;
+            _dataTextSavePath = ApplicationSettingHelper.GetFromApplicationSetting(Enums.ApplicationSettingKey.DataPath);
+            Directory.CreateDirectory(_dataTextSavePath);
+        }
         internal void StopDevice()
         {
             if (_currentDevice != null)

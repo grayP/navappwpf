@@ -1,9 +1,11 @@
 ﻿using NmeaParser.Navigate;
 using NmeaParser.Nmea.Gps;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
+using System.Windows.Threading;
 
 namespace SerialPortProcess
 {
@@ -21,8 +23,6 @@ namespace SerialPortProcess
         private static Timer _serialPortTimer;
         private int _portNumber;
 
-
-
         public bool AnyPortsFound()
         {
             return System.IO.Ports.SerialPort.GetPortNames().Any();
@@ -39,11 +39,12 @@ namespace SerialPortProcess
             }
             else
             {
-
                 var device = new NmeaParser.NmeaFileDevice("20180628.txt");
                 StartDevice(device);
             }
         }
+
+
         private void TrialSerialPort(int portNumber)
         {
             if (portNumber >= _ports.Count())
@@ -110,8 +111,8 @@ namespace SerialPortProcess
 
         private void Device_MessageReceived(object sender, NmeaParser.NmeaMessageReceivedEventArgs args)
         {
-            //Dispatcher.BeginInvoke((Action)delegate ()
-            //{
+           // Dispatcher.BeginInvoke((Action)delegate ()
+           // {
             _dataFound = true;
             switch (args.Message)
             {
@@ -124,7 +125,6 @@ namespace SerialPortProcess
                         NavigationDisplay.ParseNmeaMessage(newReading);
                         // Navigatedisplay.GetCourseCorrections(GpsCourse);
                     }
-                    NavigationDisplay.NavReadings.WindDirection = 123;
                     break;
                 case GPRMC _:
                     var newReadingt = args.Message as Gpvtg;

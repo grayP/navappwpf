@@ -46,15 +46,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\nmeaApp\NmeaParser\NmeaParser.csproj">
-      <Project>{5325235a-4ccd-443e-83fc-575088b63265}</Project>
-      <Name>NmeaParser</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AdditionalFiles Include="20180628.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AdditionalFiles>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NmeaParser_Backup_2018.08.02_01.42.07\NmeaParser.csproj">
+      <Project>{5325235a-4ccd-443e-83fc-575088b63265}</Project>
+      <Name>NmeaParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

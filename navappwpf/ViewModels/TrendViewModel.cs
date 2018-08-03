@@ -15,7 +15,9 @@ namespace navappwpf.ViewModels
         private NavigationDisplay _navigationDisplay;
         public NavigationDisplay NavigationDisplay { get { return _navigationDisplay; } set { SetProperty(ref _navigationDisplay, value); } }
         private DateTime _lastDate;
-    //    private DateTime? alignmentDate;
+        //    private DateTime? alignmentDate;
+
+
         private int _minHeight;
         public int MinHeight
         {

@@ -50,6 +50,19 @@ namespace NmeaParser.Navigate
                 }
             }
         }
+        private DateTime _minXaxis;
+        public DateTime MinXaxis
+        {
+            get { return _minXaxis; }
+            set
+            {
+                if (this._minXaxis != value)
+                {
+                    this._minXaxis = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         //  private GeoCoordinate lastCoordinate;
         private TimeSpan lastTimeSpan;
@@ -213,6 +226,7 @@ namespace NmeaParser.Navigate
                 Value = newReading.ReadingShort,
                 LongValue = newReading.ReadingLong
             });
+            MinXaxis = collection[0].Category;
         }
 
         private void SetMaxMin()

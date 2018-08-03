@@ -41,6 +41,7 @@
                                                 LabelInterval="2"
                                                 LabelFormat="HH:mm:ss" FontFamily="Segoe UI"
                                                 PlotMode="OnTicks"
+                                                Minimum="{Binding NavigationDisplay.MinXaxis}"
                                                   />
 
                             </telerik:RadCartesianChart.HorizontalAxis>
