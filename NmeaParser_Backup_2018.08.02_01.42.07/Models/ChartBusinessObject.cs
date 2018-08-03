@@ -6,35 +6,61 @@ namespace NmeaParser.Models
 
     public class ChartBusinessObject
     {
-        private double _value;
-        private DateTime _category;
-        private double _longValue;
-        public double Value
+        private int _counter;
+        public int Counter
         {
             get
             {
-                return this._value;
+                return this._counter;
             }
             set
             {
-                this._value = value;
+                this._counter = value;
             }
         }
+        private DateTime _readingDateTime;
+        private double _immediate;
+        public double ImmediateValue
+
+        {
+            get
+            {
+                return this._immediate;
+            }
+            set
+            {
+                this._immediate = value;
+            }
+        }
+        private double _shortValue;
+        public double ShortValue
+
+        {
+            get
+            {
+                return this._shortValue;
+            }
+            set
+            {
+                this._shortValue = value;
+            }
+        }
+        private double _longValue;
         public double LongValue
         {
             get { return this._longValue; }
             set { this._longValue = value; }
         }
 
-        public DateTime Category
+        public DateTime ReadingDateTime
         {
             get
             {
-                return this._category;
+                return this._readingDateTime;
             }
             set
             {
-                this._category = value;
+                this._readingDateTime = value;
             }
         }
     }

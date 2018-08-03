@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
-using System.Windows.Threading;
+
 
 namespace SerialPortProcess
 {
@@ -39,11 +39,35 @@ namespace SerialPortProcess
             }
             else
             {
-                var device = new NmeaParser.NmeaFileDevice("20180628.txt");
+                var device = new NmeaParser.NmeaFileDevice("c:\\temp\\gpsdata\\20180731.txt");
                 StartDevice(device);
+                //StartReadingLines("20180628.txt");
             }
         }
 
+        private void StartReadingLines(string fileName)
+        {
+            int counter = 0;
+            string line;
+            NmeaParser.Nmea.NmeaMessage nmea;
+
+            // Read the file and display it line by line.  
+            System.IO.StreamReader file =
+                new System.IO.StreamReader($"c:\\temp\\gpsdata\\{fileName}");
+            while ((line = file.ReadLine()) != null)
+            {
+                //NmeaParser.Nmea.NmeaMessage nmea = new NmeaParser.Nmea.NmeaMessage()
+                //var newReading = line as Gpgga;
+                //NavigationDisplay.ParseNmeaMessage(newReading);
+                System.Threading.Thread.Sleep(1000);
+                counter++;
+            }
+
+            file.Close();
+            System.Console.WriteLine("There were {0} lines.", counter);
+            // Suspend the screen.  
+            System.Console.ReadLine();
+        }
 
         private void TrialSerialPort(int portNumber)
         {
@@ -81,9 +105,6 @@ namespace SerialPortProcess
         {
             if (_currentDevice != null)
             {
-                _serialPortTimer.Stop();
-                _serialPortTimer.Enabled = false;
-                _serialPortTimer.Dispose();
                 _currentDevice.MessageReceived -= Device_MessageReceived;
                 _currentDevice.Dispose();
             }

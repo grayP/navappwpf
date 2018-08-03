@@ -78,7 +78,7 @@
     <Compile Include="Nmea\gga.cs" />
     <Compile Include="Nmea\Gps\GPGSV.cs" />
     <Compile Include="Nmea\Gsv.cs" />
-    <Compile Include="Navigate\NavigateDisplay.cs" />
+    <Compile Include="Navigate\NavigationDisplay.cs" />
     <Compile Include="Nmea\NmeaMessage.cs" />
     <Compile Include="Nmea\Gps\GPGGA.cs" />
     <Compile Include="Nmea\UnKnownMessage.cs" />
