@@ -10,15 +10,5 @@ namespace navappwpf.ViewModels
         {
             Navigatedisplay = navigateDisplay;
         }
-
-        public override void ExecutePreviousCommand()
-        {
-            base.ExecutePreviousCommand();
-        }
-
-        public override void ExecuteNextCommand()
-        {
-            base.ExecuteNextCommand();
-        }
     }
 }

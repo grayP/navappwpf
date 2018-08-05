@@ -36,13 +36,13 @@
                                                    MinHeight="{Binding MinHeight}">
                             <telerik:LineSeries Stroke="Red" CategoryBinding="ReadingDateTime" ValueBinding="ShortValue"  ItemsSource="{Binding NavigationDisplay.ChartData}"  />
                             <telerik:LineSeries Stroke="Green" CategoryBinding="ReadingDateTime" ValueBinding="LongValue" ItemsSource="{Binding NavigationDisplay.ChartData}"  />
-                            <telerik:LineSeries Stroke="Black" CategoryBinding="ReadingDateTime" ValueBinding="ImmediateValue" ItemsSource="{Binding NavigationDisplay.ChartData}"  />
                             <telerik:RadCartesianChart.HorizontalAxis>
                                 <telerik:DateTimeContinuousAxis MajorStepUnit="Second"
                                                 LabelInterval="2"
                                                 LabelFormat="HH:mm:ss" FontFamily="Segoe UI"
                                                 PlotMode="OnTicks"
-                                                
+                                                LabelFitMode="MultiLine"
+                                                Minimum="{Binding NavigationDisplay.MinXaxis}"
                                                   />
 
                             </telerik:RadCartesianChart.HorizontalAxis>
@@ -76,7 +76,7 @@
                             Foreground="Black">
                             <Run Text="Now" Style="{StaticResource ResourceKey=NavLabel}" />
                         </TextBlock>
-                        
+
                         <TextBlock Grid.Row="0"
                         Grid.Column="1"                                                                                           
                         Text="{Binding NavigationDisplay.NavReadings.CogNow, StringFormat=\{0\}°}" 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
 using navappwpf.Common;
 using navappwpf.Models;
 using NmeaParser.Navigate;
@@ -12,43 +8,48 @@ namespace navappwpf.ViewModels
 {
     internal class TrendViewModel : ViewModelBase, IDisposable
     {
+        private delegate void UiDelegate();
         private NavigationDisplay _navigationDisplay;
-        public NavigationDisplay NavigationDisplay { get { return _navigationDisplay; } set { SetProperty(ref _navigationDisplay, value); } }
+        public NavigationDisplay NavigationDisplay {
+            get => _navigationDisplay;
+            set
+            {
+                if (this._navigationDisplay == value) return;
+                this._navigationDisplay = value;
+                this.OnPropertyChanged("NavigationDisplay");
+
+            }
+        }
+
+  
         private int _minHeight;
         public int MinHeight
         {
-            get { return _minHeight; }
+            get => _minHeight;
             set
             {
-                if (this._minHeight != value)
-                {
-                    this.MinHeight = value;
-                    this.OnPropertyChanged("MinHeight");
-                }
+                if (this._minHeight == value) return;
+                this.MinHeight = value;
+                this.OnPropertyChanged("MinHeight");
             }
         }
-        private RadObservableCollection<ChartBusinessObject> _data;
-        public RadObservableCollection<ChartBusinessObject> Data
+        private RadObservableCollection<NmeaParser.Models.ChartBusinessObject> _data;
+        public RadObservableCollection<NmeaParser.Models.ChartBusinessObject> Data
         {
-            get
-            {
-                return this._data;
-            }
-            set
-            {
-                if (this._data != value)
-                {
-                    this._data = value;
-                    this.OnPropertyChanged("Data");
-                }
-            }
+            get => _data;
+            set {
+                if (this._data == value) return;
+                this._data = value;
+                this.OnPropertyChanged("Data"); }
         }
 
   
         public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
         {
+
             _navigationDisplay = navigationDisplay;
            _minHeight = 300;
+            Data = _navigationDisplay.ChartData;
         }
 
 

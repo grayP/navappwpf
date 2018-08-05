@@ -8,7 +8,7 @@ using NmeaParser.Navigate;
 
 namespace navappwpf.ViewModels
 {
-    public class ViewModelBase : ObservableObject
+    public class ViewModelBase : ObservableObject,  INotifyPropertyChanged
     {
         protected Window MainWindow { get { return Application.Current.MainWindow; } }
         protected MainWindowViewModel MainWindowDataContext { get { return Application.Current.MainWindow != null ? (MainWindowViewModel)Application.Current.MainWindow.DataContext : null; } }

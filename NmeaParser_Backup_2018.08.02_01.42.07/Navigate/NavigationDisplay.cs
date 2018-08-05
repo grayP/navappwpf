@@ -15,16 +15,16 @@ namespace NmeaParser.Navigate
 {
     public class NavigationDisplay : INotifyPropertyChanged
     {
-        private int messagecounter = 0;
+        private int _messagecounter = 0;
         public bool DeviceStarted { get; set; }
         public string LocalDeviation { get; set; }
         private readonly double LocalDev = 0.0;
-        private double LastLatitude = 0;
-        private double LastLongitude = 0;
-        private double LastLatitude2 = 0;
-        private double LastLongitude2 = 0;
-        private double LastLatitude3 = 0;
-        private double LastLongitude3 = 0;
+        private double _lastLatitude = 0;
+        private double _lastLongitude = 0;
+        private double _lastLatitude2 = 0;
+        private double _lastLongitude2 = 0;
+        private double _lastLatitude3 = 0;
+        private double _lastLongitude3 = 0;
         private RadObservableCollection<ChartBusinessObject> collection = new RadObservableCollection<ChartBusinessObject>();
         private int _yAxisMaximum;
         public int YAxisMaximum
@@ -53,7 +53,8 @@ namespace NmeaParser.Navigate
             }
         }
         private DateTime _minXaxis;
-        public DateTime MinXaxis
+
+    public DateTime MinXaxis
         {
             get { return _minXaxis; }
             set
@@ -76,14 +77,12 @@ namespace NmeaParser.Navigate
         private int _numReadings;
         public int NumReadings
         {
-            get { return this._numReadings; }
+            get => this._numReadings;
             set
             {
-                if (value != this._numReadings)
-                {
-                    this._numReadings = value;
-                    NotifyPropertyChanged();
-                }
+                if (value == this._numReadings) return;
+                this._numReadings = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -96,7 +95,7 @@ namespace NmeaParser.Navigate
         }
         public event PropertyChangedEventHandler PropertyChanged;
         #region Properties
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -127,31 +126,24 @@ namespace NmeaParser.Navigate
 
         public AlphaValues Alpha
         {
-            get { return this._alphaValues; }
+            get => _alphaValues;
             set
             {
-                if (value != this._alphaValues)
-                {
-                    this._alphaValues = value;
-                    NotifyPropertyChanged();
-                }
+                if (value == this._alphaValues) return;
+                this._alphaValues = value;
+                NotifyPropertyChanged();
             }
         }
 
         private RadObservableCollection<ChartBusinessObject> _chartData;
         public RadObservableCollection<ChartBusinessObject> ChartData
         {
-            get
-            {
-                return this._chartData;
-            }
+            get => this._chartData;
             set
             {
-                if (this._chartData != value)
-                {
-                    this._chartData = value;
-                    NotifyPropertyChanged();
-                }
+                if (this._chartData == value) return;
+                this._chartData = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -179,10 +171,10 @@ namespace NmeaParser.Navigate
             NavMessages.Enqueue(message);
            // Queue<Gpgga> orderedQueue = new Queue<Gpgga>(NavMessages.OrderBy(z=>z.FixTime));
 
-            if (Math.Abs(LastLatitude) > 0)
+            if (Math.Abs(_lastLatitude) > 0)
             {
                 NavReadings.LastPosition = new GeoCoordinate(message.Latitude, message.Longitude);
-                var bearing = Trig.GetBearing(LastLatitude3, LastLongitude3, message.Latitude, message.Longitude, LocalDev);
+                var bearing = Trig.GetBearing(_lastLatitude3, _lastLongitude3, message.Latitude, message.Longitude, LocalDev);
                 NavReadings.TimeOfReading = CreateTime(message.FixTime);
                 var speed = FindSogFromQueue(0, 15);
                 NavReadings.SetTheCogValues(bearing, Alpha);
@@ -194,13 +186,12 @@ namespace NmeaParser.Navigate
                 ManageQueue(NavReadings);
             }
             //Set past message values
-                LastLatitude3 = LastLatitude2;
-                LastLongitude3 = LastLongitude2;
-                LastLatitude2 = LastLatitude;
-                LastLongitude2 = LastLongitude;
-                LastLatitude = message.Latitude;
-                LastLongitude = message.Longitude;
-
+                _lastLatitude3 = _lastLatitude2;
+                _lastLongitude3 = _lastLongitude2;
+                _lastLatitude2 = _lastLatitude;
+                _lastLongitude2 = _lastLongitude;
+                _lastLatitude = message.Latitude;
+                _lastLongitude = message.Longitude;
         }
         public void GetCourseCorrections(Course course)
         {
@@ -227,25 +218,26 @@ namespace NmeaParser.Navigate
 
             navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack).ReadingLong;
 
-            var NewReading = new TackReading(navReadings);
-            TackReadings.Enqueue(NewReading);
-            AddData(NewReading);
+            var newReading = new TackReading(navReadings);
+            TackReadings.Enqueue(newReading);
+            AddData(newReading);
             SetMaxMin();
+
         }
 
         private void AddData(TackReading newReading)
         {
-            messagecounter += 1;
+            _messagecounter += 1;
             if (collection.Count > Math.Max(NumReadings,30)) collection.RemoveAt(0);
             collection.Add(new ChartBusinessObject()
             {
-                Counter=messagecounter,
+                Counter=_messagecounter,
                 ReadingDateTime = newReading.TimeOfReading,
                 ShortValue = newReading.ReadingShort,
                 LongValue = newReading.ReadingLong,
                 ImmediateValue= newReading.ReadingNow
             });
-            this.ChartData = collection;
+            ChartData = collection;
         }
 
         private void SetMaxMin()
