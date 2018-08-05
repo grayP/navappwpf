@@ -19,7 +19,8 @@
                 Grid.Column="0"
                 Grid.Row="0"
                 Style="{StaticResource ResourceKey=NavButton}"
-                Command="{Binding DirSpeedCommand}"    />
+                Command="{Binding DirSpeedCommand}"  
+                Visibility="Hidden"/>
         <Button Name="Nav"
                 Content="Dir/Speed" 
                 Grid.Column="1"
