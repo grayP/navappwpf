@@ -46,7 +46,7 @@ namespace navappwpf.ViewModels
         {
 
            _navigationDisplay = navigationDisplay;
-           _minHeight = 300;
+            _minHeight = 500;
             //Data = _navigationDisplay.ChartDataSlow;
         }
 

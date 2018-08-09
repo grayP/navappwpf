@@ -34,6 +34,7 @@ namespace SerialPortProcess
             _portNumber = 0;
             if (_ports.Any())
             {
+
                 SetupDataPath(DataSavePath);
                 TrialSerialPort(_portNumber);
             }
