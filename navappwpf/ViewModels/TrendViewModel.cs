@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Timers;
+using System.Windows;
+using System.Windows.Input;
 using navappwpf.Common;
 using navappwpf.Models;
 using NmeaParser.Navigate;
@@ -12,14 +14,24 @@ namespace navappwpf.ViewModels
         private delegate void UiDelegate();
         private NavigationDisplay _navigationDisplay;
         Timer timer;
-        public NavigationDisplay NavigationDisplay {
+        private DelegateCommand _switchCommand { get; set; }
+
+        public ICommand SwitchCommand { get { if (_switchCommand == null) { _switchCommand = new DelegateCommand(ExecuteSwitchCommand, CanExecuteSwitchCommand); } return _switchCommand; } }
+
+        public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
+        {
+            NavigationDisplay = navigationDisplay;
+            _minHeight = (int)(((System.Windows.Controls.Panel)Application.Current.MainWindow.Content).ActualHeight) - 300;
+        }
+  
+        public NavigationDisplay NavigationDisplay
+        {
             get => _navigationDisplay;
             set
             {
                 if (this._navigationDisplay == value) return;
                 this._navigationDisplay = value;
                 this.OnPropertyChanged("NavigationDisplay");
-
             }
         }
         private int _minHeight;
@@ -33,35 +45,28 @@ namespace navappwpf.ViewModels
                 this.OnPropertyChanged("MinHeight");
             }
         }
-        private RadObservableCollection<NmeaParser.Models.ChartBusinessObject> _data;
-        public RadObservableCollection<NmeaParser.Models.ChartBusinessObject> Data
+        public virtual void ExecuteSwitchCommand()
         {
-            get => _data;
-            set {
-                if (this._data == value) return;
-                this._data = value;
-                this.OnPropertyChanged("Data"); }
+            ExecuteActionInBackground(
+                () =>
+                {
+                  
+                },
+                () => { SetCurrentViewModel(new TrendViewModel(Navigatedisplay)); });
         }
-        public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
-        {
-
-           _navigationDisplay = navigationDisplay;
-           _minHeight = 300;
-            //Data = _navigationDisplay.ChartDataSlow;
-        }
+        public virtual bool CanExecuteSwitchCommand()
+        { return true; }
 
 
-
-
-        private bool disposed;
+        private bool _disposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     //base.StopDevice();
-                    disposed = true;
+                    _disposed = true;
                 }
             }
         }
