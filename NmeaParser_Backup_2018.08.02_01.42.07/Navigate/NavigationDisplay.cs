@@ -25,7 +25,8 @@ namespace NmeaParser.Navigate
         private double _lastLongitude2 = 0;
         private double _lastLatitude3 = 0;
         private double _lastLongitude3 = 0;
-        private RadObservableCollection<ChartBusinessObject> collection = new RadObservableCollection<ChartBusinessObject>();
+        private RadObservableCollection<ChartBusinessObject> SlowCollection = new RadObservableCollection<ChartBusinessObject>();
+        private RadObservableCollection<ChartBusinessObject> FastCollection = new RadObservableCollection<ChartBusinessObject>();
         private int _yAxisMaximum;
         public int YAxisMaximum
         {
@@ -54,7 +55,7 @@ namespace NmeaParser.Navigate
         }
         private DateTime _minXaxis;
 
-    public DateTime MinXaxis
+        public DateTime MinXaxis
         {
             get { return _minXaxis; }
             set
@@ -134,15 +135,25 @@ namespace NmeaParser.Navigate
                 NotifyPropertyChanged();
             }
         }
-
-        private RadObservableCollection<ChartBusinessObject> _chartData;
-        public RadObservableCollection<ChartBusinessObject> ChartData
+        private RadObservableCollection<ChartBusinessObject> _chartDataFast;
+        public RadObservableCollection<ChartBusinessObject> ChartDataFast
         {
-            get => this._chartData;
+            get => _chartDataFast;
             set
             {
-                if (this._chartData == value) return;
-                this._chartData = value;
+                if (this._chartDataFast == value) return;
+                this._chartDataFast = value;
+                NotifyPropertyChanged();
+            }
+        }
+        private RadObservableCollection<ChartBusinessObject> _chartDataSlow;
+        public RadObservableCollection<ChartBusinessObject> ChartDataSlow
+        {
+            get => this._chartDataSlow;
+            set
+            {
+                if (this._chartDataSlow == value) return;
+                this._chartDataSlow = value;
                 NotifyPropertyChanged();
             }
         }
@@ -169,7 +180,7 @@ namespace NmeaParser.Navigate
         {
             if (NavMessages.Count > 1000) NavMessages.Dequeue();
             NavMessages.Enqueue(message);
-           // Queue<Gpgga> orderedQueue = new Queue<Gpgga>(NavMessages.OrderBy(z=>z.FixTime));
+            // Queue<Gpgga> orderedQueue = new Queue<Gpgga>(NavMessages.OrderBy(z=>z.FixTime));
 
             if (Math.Abs(_lastLatitude) > 0)
             {
@@ -186,12 +197,12 @@ namespace NmeaParser.Navigate
                 ManageQueue(NavReadings);
             }
             //Set past message values
-                _lastLatitude3 = _lastLatitude2;
-                _lastLongitude3 = _lastLongitude2;
-                _lastLatitude2 = _lastLatitude;
-                _lastLongitude2 = _lastLongitude;
-                _lastLatitude = message.Latitude;
-                _lastLongitude = message.Longitude;
+            _lastLatitude3 = _lastLatitude2;
+            _lastLongitude3 = _lastLongitude2;
+            _lastLatitude2 = _lastLatitude;
+            _lastLongitude2 = _lastLongitude;
+            _lastLatitude = message.Latitude;
+            _lastLongitude = message.Longitude;
         }
         public void GetCourseCorrections(Course course)
         {
@@ -216,7 +227,7 @@ namespace NmeaParser.Navigate
             if (TackReadings.Count > 1000)
                 TackReadings.Dequeue();
 
-            navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-15) && x.CurrentTack == navReadings.Tack).ReadingLong;
+            navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
 
             var newReading = new TackReading(navReadings);
             TackReadings.Enqueue(newReading);
@@ -227,27 +238,30 @@ namespace NmeaParser.Navigate
 
         private void AddData(TackReading newReading)
         {
-            _messagecounter += 1;
-            if (collection.Count > Math.Max(NumReadings,30)) collection.RemoveAt(0);
+            ChartDataSlow = UpdateCollection(SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
+            ChartDataFast = UpdateCollection(FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+        }
+
+        private RadObservableCollection<ChartBusinessObject> UpdateCollection(RadObservableCollection<ChartBusinessObject> collection, DateTime dateTime, double value, Tack Tack)
+        {
+            if (collection.Count > Math.Max(NumReadings, 30)) collection.RemoveAt(0);
             collection.Add(new ChartBusinessObject()
             {
-                Counter=_messagecounter,
-                ReadingDateTime = newReading.TimeOfReading,
-                ShortValue = newReading.ReadingShort,
-                LongValue = newReading.ReadingLong,
-                ImmediateValue= newReading.ReadingNow
+                ReadingDateTime = dateTime,
+                Value = value,
+                tack = Tack
             });
-            ChartData = collection;
+            return collection;
         }
 
         private void SetMaxMin()
         {
-            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x.ShortValue), 10.0) - 20;
+            var newMin = ExtensionMethods.RoundToNearest((int)SlowCollection.Min(x => x.Value), 10.0) - 20;
             if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
             YAxisMaximum = YAxisMinimum + 20;
-            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.ShortValue), 20.0) + 20;
+            var newMax = ExtensionMethods.RoundToNearest((int)SlowCollection.Max(x => x.Value), 20.0) + 20;
             if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
-            MinXaxis = collection.OrderBy(x => x.ReadingDateTime).FirstOrDefault().ReadingDateTime;
+            MinXaxis = SlowCollection.FirstOrDefault().ReadingDateTime;
         }
 
         public static DateTime CreateTime(TimeSpan fixTime)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using navappwpf.Common;
 using navappwpf.Models;
 using NmeaParser.Navigate;
@@ -10,6 +11,7 @@ namespace navappwpf.ViewModels
     {
         private delegate void UiDelegate();
         private NavigationDisplay _navigationDisplay;
+        Timer timer;
         public NavigationDisplay NavigationDisplay {
             get => _navigationDisplay;
             set
@@ -20,8 +22,6 @@ namespace navappwpf.ViewModels
 
             }
         }
-
-  
         private int _minHeight;
         public int MinHeight
         {
@@ -42,18 +42,18 @@ namespace navappwpf.ViewModels
                 this._data = value;
                 this.OnPropertyChanged("Data"); }
         }
-
-  
         public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
         {
 
-            _navigationDisplay = navigationDisplay;
+           _navigationDisplay = navigationDisplay;
            _minHeight = 300;
-            Data = _navigationDisplay.ChartData;
+            //Data = _navigationDisplay.ChartDataSlow;
         }
 
 
-         private bool disposed;
+
+
+        private bool disposed;
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)

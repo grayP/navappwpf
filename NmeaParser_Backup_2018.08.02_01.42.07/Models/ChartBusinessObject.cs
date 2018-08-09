@@ -1,12 +1,12 @@
 ﻿using System;
+using NmeaParser.Constants;
+
 namespace NmeaParser.Models
 { 
     public class ChartBusinessObject
     {
-        public int Counter { get; set; }
-        public double ImmediateValue { get; set; }
-        public double ShortValue { get; set; }
-        public double LongValue { get; set; }
+        public Tack tack { get; set; }
+        public double Value { get; set; }
         public DateTime ReadingDateTime { get; set; }
     }
 }

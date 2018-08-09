@@ -34,8 +34,25 @@
                         <TextBlock Text="COG" FontSize="16" Margin="5,0,0,0" />
                         <telerik:RadCartesianChart Palette="Windows8" 
                                                    MinHeight="{Binding MinHeight}">
-                            <telerik:LineSeries Stroke="Red" CategoryBinding="ReadingDateTime" ValueBinding="ShortValue"  ItemsSource="{Binding NavigationDisplay.ChartData}"  />
-                            <telerik:LineSeries Stroke="Green" CategoryBinding="ReadingDateTime" ValueBinding="LongValue" ItemsSource="{Binding NavigationDisplay.ChartData}"  />
+                            <telerik:RadCartesianChart.Resources>
+
+                                <telerik:LinearAxis 
+                                    x:Key="Axis1"
+                                    HorizontalLocation="Left"
+                                    Minimum="{Binding NavigationDisplay.YAxisMinimum}" 
+                                    MajorStep="20"
+                                    Maximum="{Binding NavigationDisplay.YAxisMaximum}" 
+                                    FontFamily="Segoe UI" 
+                                    />
+                                <telerik:LinearAxis 
+                                    x:Key="Axis2"
+                                    HorizontalLocation="Right"
+                                    Minimum="{Binding NavigationDisplay.YAxisMinimum}" 
+                                    MajorStep="20"
+                                    Maximum="{Binding NavigationDisplay.YAxisMaximum}" 
+                                    FontFamily="Segoe UI" 
+                                    />
+                            </telerik:RadCartesianChart.Resources>
                             <telerik:RadCartesianChart.HorizontalAxis>
                                 <telerik:DateTimeContinuousAxis MajorStepUnit="Second"
                                                 LabelInterval="2"
@@ -46,14 +63,8 @@
                                                   />
 
                             </telerik:RadCartesianChart.HorizontalAxis>
-                            <telerik:RadCartesianChart.VerticalAxis>
-                                <telerik:LinearAxis 
-                                    Minimum="{Binding NavigationDisplay.YAxisMinimum}" 
-                                    MajorStep="20"
-                                    Maximum="{Binding NavigationDisplay.YAxisMaximum}" 
-                                    FontFamily="Segoe UI" 
-                                    />
-                            </telerik:RadCartesianChart.VerticalAxis>
+                            <telerik:LineSeries  Stroke="Red" VerticalAxis="{StaticResource Axis1}" CategoryBinding="ReadingDateTime" ValueBinding="Value" ItemsSource="{Binding NavigationDisplay.ChartDataFast}"  />
+                            <telerik:LineSeries  Stroke="Green" VerticalAxis="{StaticResource Axis2}" CategoryBinding="ReadingDateTime" ValueBinding="Value" ItemsSource="{Binding NavigationDisplay.ChartDataSlow}"  />
                             <telerik:RadCartesianChart.Grid>
                                 <telerik:CartesianChartGrid MajorLinesVisibility="XY" MajorYLineDashArray="10,10" />
                             </telerik:RadCartesianChart.Grid>
