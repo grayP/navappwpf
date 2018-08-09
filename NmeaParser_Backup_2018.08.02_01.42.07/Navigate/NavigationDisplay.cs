@@ -232,8 +232,19 @@ namespace NmeaParser.Navigate
             var newReading = new TackReading(navReadings);
             TackReadings.Enqueue(newReading);
             AddData(newReading);
-            SetMaxMin();
+            SetMaxMin(FastCollection);
 
+        }
+
+        private void SetMaxMin(RadObservableCollection<ChartBusinessObject> collection)
+        {
+            if (!collection.Any()) return;
+            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x.Value), 10.0) - 20;
+            if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
+            YAxisMaximum = YAxisMinimum + 20;
+            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.Value), 20.0) + 20;
+            if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
+            MinXaxis = collection.FirstOrDefault().ReadingDateTime;
         }
 
         private void AddData(TackReading newReading)
@@ -253,17 +264,6 @@ namespace NmeaParser.Navigate
             });
             return collection;
         }
-
-        private void SetMaxMin()
-        {
-            var newMin = ExtensionMethods.RoundToNearest((int)SlowCollection.Min(x => x.Value), 10.0) - 20;
-            if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
-            YAxisMaximum = YAxisMinimum + 20;
-            var newMax = ExtensionMethods.RoundToNearest((int)SlowCollection.Max(x => x.Value), 20.0) + 20;
-            if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
-            MinXaxis = SlowCollection.FirstOrDefault().ReadingDateTime;
-        }
-
         public static DateTime CreateTime(TimeSpan fixTime)
         {
             var result = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, fixTime.Hours, fixTime.Minutes, fixTime.Seconds).ToLocalTime();

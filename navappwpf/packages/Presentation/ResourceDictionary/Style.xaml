@@ -129,7 +129,8 @@
     <Style TargetType="{x:Type Button}"
         x:Key="NavButton"
         BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="VerticalAlignment" Value="Bottom"      />
+        <Setter Property="VerticalAlignment" 
+                Value="Bottom" />
         <Setter Property="Background" 
                 Value="#f4f6f6" />
         <Setter Property="HorizontalAlignment"

@@ -13,9 +13,7 @@ namespace navappwpf.Constants
         public const string wind = "Wind";
         public const string AlphaCogNow = "AlphaCogNow";
         public const string AlphaCogSlow = "AlphaCogSlow";
-        public const string AlphaCogFast= "AlphaCogFast";
-
-
-
+        public const string AlphaCogFast = "AlphaCogFast";
+        public const string NumReadings = "NumReadings";
     }
 }

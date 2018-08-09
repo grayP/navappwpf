@@ -71,7 +71,12 @@
                         </telerik:RadCartesianChart>
                     </DockPanel>
                     <Grid Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="16*"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
@@ -92,13 +97,12 @@
                         Grid.Column="1"                                                                                           
                         Text="{Binding NavigationDisplay.NavReadings.CogNow, StringFormat=\{0\}°}" 
                         Style="{StaticResource ResourceKey=NavigationValue}"
-                        
                                    />
                         <TextBlock 
                         Grid.Row="0" 
                         Grid.Column="2" 
                         Style="{StaticResource ResourceKey=NavigationLabel}"
-                            Foreground="Red">
+                            Foreground="Red" >
                             <Run Text="Fast" Style="{StaticResource ResourceKey=NavLabel}" />
                         </TextBlock>
 
@@ -106,13 +110,13 @@
                         Grid.Column="3"
                         Text="{Binding NavigationDisplay.NavReadings.CogFast, StringFormat=\{0\}°}" 
                         Style="{StaticResource ResourceKey=NavigationValue}"
-                                   Foreground="Red"/>
+                                   Foreground="Red" />
 
                         <TextBlock 
                         Grid.Row="0" 
                         Grid.Column="4" 
                         Style="{StaticResource ResourceKey=NavigationLabel}"
-                        Foreground="Green"    >
+                        Foreground="Green"  >
                             <Run Text="Slow" Style="{StaticResource ResourceKey=NavLabel}" />
                         </TextBlock>
 
@@ -120,7 +124,13 @@
                         Grid.Column="5"
                         Text="{Binding NavigationDisplay.NavReadings.CogSlow, StringFormat=\{0\}°}" 
                         Style="{StaticResource ResourceKey=NavigationValue}"
-                        Foreground="Green"/>
+                        Foreground="Green" />
+                        <Button Grid.Column="6"
+                                Content="Switch"
+                                Style="{StaticResource ResourceKey=NavButton}"
+                                Command="{Binding SwitchCommand}" 
+                                VerticalAlignment="Center" 
+                                ></Button>
 
                     </Grid>
                 </Grid>
