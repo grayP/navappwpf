@@ -326,6 +326,7 @@ namespace navappwpf.ViewModels
             SaveSetting(Navigatedisplay.Alpha.AlphaCogNow, Constants.Constants.AlphaCogNow);
             SaveSetting(Navigatedisplay.Alpha.AlphaCogFast, Constants.Constants.AlphaCogFast);
             SaveSetting(Navigatedisplay.Alpha.AlphaCogSlow, Constants.Constants.AlphaCogSlow);
+            SaveSetting(Navigatedisplay.NumReadings, Constants.Constants.NumReadings);
 
 
         }

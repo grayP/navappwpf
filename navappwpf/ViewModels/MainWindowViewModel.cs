@@ -33,6 +33,8 @@ namespace navappwpf.ViewModels
             Navigatedisplay.Alpha.AlphaCogFast = SetInitialValues(Navigatedisplay.Alpha.AlphaCogFast, Constants.Constants.AlphaCogFast);
             Navigatedisplay.Alpha.AlphaCogSlow = SetInitialValues(Navigatedisplay.Alpha.AlphaCogSlow, Constants.Constants.AlphaCogSlow);
             Navigatedisplay.NavReadings.WindDirection = (int)SetInitialValues(Navigatedisplay.NavReadings.WindDirection, Constants.Constants.wind);
+            Navigatedisplay.NumReadings =
+                (int) SetInitialValues(Navigatedisplay.NumReadings, Constants.Constants.NumReadings);
         }
         private double SetInitialValues(double value, string key)
         {
