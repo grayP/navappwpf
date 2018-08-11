@@ -21,8 +21,8 @@ namespace NmeaParser.Models
             ReadingNow = navReading.CogNow;
             ReadingShort = navReading.CogFast;
             ReadingLong = navReading.CogSlow;
-            ReadingSpeedShort = navReading.SogShort;
-            ReadingSpeedLong = navReading.SogLong;
+            ReadingSpeedShort = navReading.SogFast;
+            ReadingSpeedLong = navReading.SogSlow;
         }
     }
 }

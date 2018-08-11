@@ -41,6 +41,9 @@ namespace navappwpf.ViewModels
         }
         private DelegateCommand _switchCommand { get; set; }
         public ICommand SwitchCommand { get { if (_switchCommand == null) { _switchCommand = new DelegateCommand(ExecuteSwitchCommand, CanExecuteSwitchCommand); } return _switchCommand; } }
+        private DelegateCommand _resetCommand { get; set; }
+        public ICommand ResetCommand { get { if (_resetCommand == null) { _resetCommand = new DelegateCommand(ExecuteResetCommand, CanExecuteResetCommand); } return _resetCommand; } }
+
 
         public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
         {
@@ -76,12 +79,20 @@ namespace navappwpf.ViewModels
             ExecuteActionInBackground(
                 () =>
                 {
-                   SogChartVisible = CogChartVisible;
-                   CogChartVisible = !CogChartVisible;
+                    SogChartVisible = CogChartVisible;
+                    CogChartVisible = !CogChartVisible;
                 });
         }
         public virtual bool CanExecuteSwitchCommand()
         { return true; }
+
+        public virtual void ExecuteResetCommand()
+        {
+            NavigationDisplay.Reset();
+        }
+        public virtual bool CanExecuteResetCommand()
+        { return true; }
+
 
 
         private bool _disposed;

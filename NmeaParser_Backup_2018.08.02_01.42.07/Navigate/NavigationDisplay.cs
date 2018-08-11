@@ -29,7 +29,9 @@ namespace NmeaParser.Navigate
         public ChartDisplay SogChart { get; set; } = new ChartDisplay();
         public ChartDisplay CogChart { get; set; } = new ChartDisplay();
 
-  
+        private GeoCoordinate DroppedPoint = new GeoCoordinate();
+        private DateTime DroppedPointTime;
+
         //  private GeoCoordinate lastCoordinate;
         private TimeSpan lastTimeSpan;
         private Queue<Gpgga> NavMessages = new Queue<Gpgga>(1001);
@@ -96,6 +98,12 @@ namespace NmeaParser.Navigate
                 NotifyPropertyChanged();
             }
         }
+
+        public void Reset()
+        {
+            DroppedPoint = NavReadings.LastPosition;
+            DroppedPointTime = NavReadings.TimeOfReading;
+        }
         #endregion
         public bool IsGoodMessage(Gpgga newReading)
         {
@@ -157,9 +165,14 @@ namespace NmeaParser.Navigate
             AddData(newReading);
             CogChart.SetmaxMin(10);
             SogChart.SetmaxMin(1);
+            SetSogToDroppedPoint(navReadings.LastPosition, navReadings.TimeOfReading);
         }
- 
-  
+
+        private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
+        {
+            if (timeOfLastReading == DroppedPointTime) return;
+            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144,2);
+        }
 
         private void AddData(TackReading newReading)
         {
@@ -197,6 +210,6 @@ namespace NmeaParser.Navigate
             return Math.Round(firstCoord.GetDistanceTo(lastCoord) / (firstPoint.FixTime - lastPoint.FixTime).TotalSeconds * 3.6 / 1.852 * 100, 0);
         }
 
-      }
+    }
 
 }

@@ -24,7 +24,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
 
@@ -54,9 +55,9 @@
                                 <telerik:LinearAxis 
                                     x:Key="Axis2"
                                     HorizontalLocation="Right"
-                                    Minimum="{Binding NavigationDisplay.CogChart.YAxisMinimum}" 
+                                    Minimum="{Binding NavigationDisplay.CogChart.YaxisMinimum}" 
                                     MajorStep="20"
-                                    Maximum="{Binding NavigationDisplay.CogChart.YAxisMaximum}" 
+                                    Maximum="{Binding NavigationDisplay.CogChart.YaxisMaximum}" 
                                     FontFamily="Segoe UI" 
                                     />
                                 <telerik:DateTimeContinuousAxis 
@@ -78,7 +79,8 @@
                         </telerik:RadCartesianChart>
                     </DockPanel>
                     <DockPanel Grid.Column="0"
-                                Grid.Row="1" Margin="10">
+                                Grid.Row="1"
+                               Margin="10">
                         <telerik:RadCartesianChart 
                             Grid.Column="0" Grid.Row="1"
                             Name="Sog"
@@ -98,9 +100,9 @@
                                 <telerik:LinearAxis 
                                     x:Key="Axis4"
                                     HorizontalLocation="Right"
-                                    Minimum="{Binding NavigationDisplay.YaxisMinimum}" 
+                                    Minimum="{Binding NavigationDisplay.SogChart.YaxisMinimum}" 
                                     MajorStep=".5"
-                                    Maximum="{Binding NavigationDisplay.YaxisMaximum}" 
+                                    Maximum="{Binding NavigationDisplay.SogChart.YaxisMaximum}" 
                                     FontFamily="Segoe UI" 
                                     />
                                 <telerik:DateTimeContinuousAxis 
@@ -123,14 +125,8 @@
 
                     </DockPanel>
                     <DockPanel Grid.Row="2">
-                        
-                    
-                    <Grid Row="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="16*"/>
-                            <RowDefinition Height="9*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
+                        <Grid Row="0" Visibility="{Binding Path=CogChartVisible, Converter={StaticResource BoolToVisConverter}}">
+                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
@@ -189,6 +185,80 @@
 
                     </Grid>
                         </DockPanel>
+                    <DockPanel Grid.Row="3" >
+                        <Grid Row="0" Visibility="{Binding Path=SogChartVisible, Converter={StaticResource BoolToVisConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock 
+                        Grid.Row="0" 
+                        Grid.Column="0" 
+                        Style="{StaticResource ResourceKey=NavigationLabel}"
+                            Foreground="Black">
+                            <Run Text="Now" Style="{StaticResource ResourceKey=NavLabel}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="0"
+                        Grid.Column="1"                                                                                           
+                        Text="{Binding NavigationDisplay.NavReadings.SogToPoint}" 
+                        Style="{StaticResource ResourceKey=NavigationValue}"
+                                   />
+                            <TextBlock 
+                            Grid.Row="0" 
+                            Grid.Column="2" 
+                            Style="{StaticResource ResourceKey=NavigationLabel}"
+                            Foreground="Red" >
+                            <Run Text="Fast" Style="{StaticResource ResourceKey=NavLabel}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="0"
+                            Grid.Column="3"
+                            Text="{Binding NavigationDisplay.NavReadings.SogFast}" 
+                            Style="{StaticResource ResourceKey=NavigationValue}"
+                                   Foreground="Red" />
+
+                            <TextBlock 
+                            Grid.Row="0" 
+                            Grid.Column="4" 
+                            Style="{StaticResource ResourceKey=NavigationLabel}"
+                            Foreground="Green"  >
+                            <Run Text="Slow" Style="{StaticResource ResourceKey=NavLabel}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="0"
+                            Grid.Column="5"
+                            Text="{Binding NavigationDisplay.NavReadings.SogSlow}" 
+                            Style="{StaticResource ResourceKey=NavigationValue}"
+                            Foreground="Green" />
+
+                            <Grid Grid.Column="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button  Grid.Column="0"
+                                Content="Reset"
+                                Style="{StaticResource ResourceKey=NavButton}"
+                                Command="{Binding ResetCommand}" 
+                                VerticalAlignment="Center" 
+                                ></Button>
+                               <Button  Grid.Column="1"
+                                Content="Switch"
+                                Style="{StaticResource ResourceKey=NavButton}"
+                                Command="{Binding SwitchCommand}" 
+                                VerticalAlignment="Center" 
+                                ></Button>
+</Grid>
+                        </Grid>
+
+                    </DockPanel>
                 </Grid>
             </StackPanel>
         </Grid>

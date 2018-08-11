@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Device.Location;
 using System.Runtime.CompilerServices;
 
-
 namespace NmeaParser.Navigate
 {
     public class NavigationReadings : INotifyPropertyChanged
@@ -14,9 +13,10 @@ namespace NmeaParser.Navigate
         private double _cogSlow;
         private double _cogSlowPrevious;
         private double _sogNow;
-        private double _sogShort;
-        private double _sogLong;
+        private double _sogFast;
+        private double _sogSlow;
         private double _sogShortAgo;
+        private double _sogToPoint;
         private int _windDirection = 0;
 
         private double _lastSogNow = 0.0;
@@ -29,9 +29,7 @@ namespace NmeaParser.Navigate
         private double _LastCogSlow = 0;
         private double _LastCogFastAgo;
         public GeoCoordinate LastPosition { get; set; }
-
         private Constants.Tack _tack ;
-
         public event PropertyChangedEventHandler PropertyChanged;
         #region Properties
 
@@ -113,31 +111,30 @@ namespace NmeaParser.Navigate
                 }
             }
         }
-        public double SogShort
+        public double SogFast
         {
-            get { return this._sogShort; }
+            get { return this._sogFast; }
             set
             {
-                if (value != this._sogShort)
+                if (value != this._sogFast)
                 {
-                    this._sogShort = value;
+                    this._sogFast = value;
                     NotifyPropertyChanged();
                 }
             }
         }
-        public double SogLong
+        public double SogSlow
         {
-            get { return this._sogLong; }
+            get { return this._sogSlow; }
             set
             {
-                if (value != this._sogLong)
+                if (value != this._sogSlow)
                 {
-                    this._sogLong = value;
+                    this._sogSlow = value;
                     NotifyPropertyChanged();
                 }
             }
         }
-
         public double SogShortAgo
         {
             get { return this._sogShortAgo; }
@@ -146,6 +143,18 @@ namespace NmeaParser.Navigate
                 if (value != this._sogShortAgo)
                 {
                     this._sogShortAgo = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double SogToPoint
+        {
+            get { return this._sogToPoint; }
+            set
+            {
+                if (value != this._sogToPoint)
+                {
+                    this._sogToPoint = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -201,10 +210,12 @@ namespace NmeaParser.Navigate
         internal void SetTheSogValues(double speed)
         {
             SogNow = GetNewAverage(speed, ref _lastSogNow, .9);
-            SogShort = GetNewAverage(speed, ref _lastSogShort, .5);
-            SogLong = GetNewAverage(speed, ref _lastSogLong, .3);
+            SogFast = GetNewAverage(speed, ref _lastSogShort, .5);
+            SogSlow = GetNewAverage(speed, ref _lastSogLong, .3);
         }
-
+        internal void SetSpeedToPoint()
+        {
+        }
         private double GetNewAverage(double speed, ref double lastSogValue, double alpha)
         {
             var newValue = Trig.AverageWeighted(speed, lastSogValue * 100, alpha) / 100.0;
