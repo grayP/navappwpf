@@ -13,17 +13,43 @@ namespace navappwpf.ViewModels
     {
         private delegate void UiDelegate();
         private NavigationDisplay _navigationDisplay;
-        Timer timer;
+        private bool _cogChartVisible;
+        public bool CogChartVisible
+        {
+            get
+            {
+                return _cogChartVisible;
+            }
+            set
+            {
+                _cogChartVisible = value;
+                this.OnPropertyChanged("CogChartVisible");
+            }
+        }
+        private bool _sogChartVisible;
+        public bool SogChartVisible
+        {
+            get
+            {
+                return _sogChartVisible;
+            }
+            set
+            {
+                _sogChartVisible = value;
+                this.OnPropertyChanged("SogChartVisible");
+            }
+        }
         private DelegateCommand _switchCommand { get; set; }
-
         public ICommand SwitchCommand { get { if (_switchCommand == null) { _switchCommand = new DelegateCommand(ExecuteSwitchCommand, CanExecuteSwitchCommand); } return _switchCommand; } }
 
         public TrendViewModel(NavigationDisplay navigationDisplay) : base(new DispatcherWrapper())
         {
             NavigationDisplay = navigationDisplay;
-            _minHeight = (int)(((System.Windows.Controls.Panel)Application.Current.MainWindow.Content).ActualHeight) - 300;
+            _minHeight = (int)(((System.Windows.Controls.Panel)Application.Current.MainWindow.Content).ActualHeight) - 150;
+            SogChartVisible = false;
+            CogChartVisible = true;
         }
-  
+
         public NavigationDisplay NavigationDisplay
         {
             get => _navigationDisplay;
@@ -50,9 +76,9 @@ namespace navappwpf.ViewModels
             ExecuteActionInBackground(
                 () =>
                 {
-                  
-                },
-                () => { SetCurrentViewModel(new TrendViewModel(Navigatedisplay)); });
+                   SogChartVisible = CogChartVisible;
+                   CogChartVisible = !CogChartVisible;
+                });
         }
         public virtual bool CanExecuteSwitchCommand()
         { return true; }
@@ -61,13 +87,11 @@ namespace navappwpf.ViewModels
         private bool _disposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (_disposed) return;
+            if (disposing)
             {
-                if (disposing)
-                {
-                    //base.StopDevice();
-                    _disposed = true;
-                }
+                //base.StopDevice();
+                _disposed = true;
             }
         }
         public override void Dispose()
