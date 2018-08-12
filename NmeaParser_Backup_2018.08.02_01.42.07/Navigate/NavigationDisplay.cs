@@ -161,7 +161,7 @@ namespace NmeaParser.Navigate
             {
                 if (TackReadings.Count > 1000)
                     TackReadings.Dequeue();
-                navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
+                //navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
                 var newReading = new TackReading(navReadings);
                 TackReadings.Enqueue(newReading);
                 AddData(newReading);
@@ -178,6 +178,7 @@ namespace NmeaParser.Navigate
 
         private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
         {
+            if (double.IsNaN(DroppedPoint.Latitude)) return;
             if (timeOfLastReading == DroppedPointTime) return;
             NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144, 2);
         }
