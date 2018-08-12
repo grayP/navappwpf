@@ -112,7 +112,7 @@
                                                 LabelFormat="HH:mm:ss" FontFamily="Segoe UI"
                                                 PlotMode="OnTicks"
                                                 LabelFitMode="MultiLine"
-                                                Minimum="{Binding NavigationDisplay.XaxisMinimum}"
+                                                Minimum="{Binding NavigationDisplay.SogChart.XaxisMinimum}"
                                                   />
                             </telerik:RadCartesianChart.Resources>
 

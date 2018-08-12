@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using NmeaParser.Constants;
 using NmeaParser.Helper;
 using Telerik.Windows.Data;
 
@@ -12,11 +13,6 @@ namespace NmeaParser.Models
 {
     public class ChartDisplay:  INotifyPropertyChanged
     {
-        public RadObservableCollection<ChartBusinessObject> SlowCollection { get; set; } =
-            new RadObservableCollection<ChartBusinessObject>();
-        public RadObservableCollection<ChartBusinessObject> FastCollection { get; set; } =
-            new RadObservableCollection<ChartBusinessObject>();
-
         private RadObservableCollection<ChartBusinessObject> _chartDataFast; 
         public RadObservableCollection<ChartBusinessObject> ChartDataFast
         {
@@ -78,7 +74,10 @@ namespace NmeaParser.Models
 
         public ChartDisplay()
         {
-
+            ChartDataFast =
+            new RadObservableCollection<ChartBusinessObject>();
+            ChartDataSlow =
+            new RadObservableCollection<ChartBusinessObject>();
         }
 
  
@@ -92,13 +91,35 @@ namespace NmeaParser.Models
 
         public void SetmaxMin(int RoundTo)
         {
-            if (!FastCollection.Any()) return;
-            var newMin = ExtensionMethods.RoundToNearest((int)FastCollection.Min(x => x.Value), 10.0) - 2*RoundTo;
+            if (!ChartDataFast.Any()) return;
+            var newMin = ExtensionMethods.RoundToNearest((int)ChartDataFast.Min(x => x.Value), 10.0) - 2*RoundTo;
             if (newMin < YaxisMinimum || newMin > YaxisMinimum + 19) YaxisMinimum = newMin;
             YaxisMinimum = YaxisMinimum + RoundTo;
-            var newMax = ExtensionMethods.RoundToNearest((int)FastCollection.Max(x => x.Value), RoundTo) + 2* RoundTo;
+            var newMax = ExtensionMethods.RoundToNearest((int)ChartDataFast.Max(x => x.Value), RoundTo) + 2* RoundTo;
             if (newMax > YaxisMaximum || newMax < YaxisMaximum - (2* RoundTo-1)) YaxisMaximum = newMax;
-            XaxisMinimum = FastCollection.FirstOrDefault().ReadingDateTime;
+            XaxisMinimum = ChartDataFast.FirstOrDefault().ReadingDateTime;
         }
+
+        public void AddFastData(int NumReadings, DateTime dateTime, double value, Tack Tack)
+        {
+            while (ChartDataFast.Count > Math.Max(NumReadings, 30)) ChartDataFast.RemoveAt(0);
+            ChartDataFast.Add(new ChartBusinessObject()
+            {
+                ReadingDateTime = dateTime,
+                Value = value,
+                tack = Tack
+            });
+        }
+        public void AddSlowData(int NumReadings, DateTime dateTime, double value, Tack Tack)
+        {
+            while (ChartDataSlow.Count > Math.Max(NumReadings, 30)) ChartDataSlow.RemoveAt(0);
+            ChartDataSlow.Add(new ChartBusinessObject()
+            {
+                ReadingDateTime = dateTime,
+                Value = value,
+                tack = Tack
+            });
+        }
+
     }
 }

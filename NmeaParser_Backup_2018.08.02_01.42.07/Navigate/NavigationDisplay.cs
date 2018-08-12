@@ -178,32 +178,28 @@ namespace NmeaParser.Navigate
 
         private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
         {
-            try
-            {
-                if (DroppedPoint==null) return;
-                if (timeOfLastReading == DroppedPointTime) return;
-                NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144, 2);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            } 
+
+            if (double.IsNaN(DroppedPoint.Latitude)) return;
+            if (timeOfLastReading == DroppedPointTime) return;
+            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * 1.9438, 2);
         }
 
         private void AddData(TackReading newReading)
         {
             try
             {
-                CogChart.ChartDataFast = UpdateCollection(CogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
-                CogChart.ChartDataSlow = UpdateCollection(CogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
-                SogChart.ChartDataSlow = UpdateCollection(SogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
-                SogChart.ChartDataFast = UpdateCollection(SogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
+                CogChart.AddFastData(NumReadings, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+                CogChart.AddSlowData(NumReadings, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
+                SogChart.AddFastData(NumReadings, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
+                SogChart.AddSlowData(NumReadings, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
+                //CogChart.ChartDataFast = UpdateCollection(CogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+                //CogChart.ChartDataSlow = UpdateCollection(CogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
+                //SogChart.ChartDataSlow = UpdateCollection(SogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
+                //SogChart.ChartDataFast = UpdateCollection(SogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                MessageBox.Show(e.InnerException.ToString());
             }
         }
 
