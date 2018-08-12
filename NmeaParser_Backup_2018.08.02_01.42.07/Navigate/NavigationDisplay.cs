@@ -178,8 +178,17 @@ namespace NmeaParser.Navigate
 
         private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
         {
-            if (timeOfLastReading == DroppedPointTime) return;
-            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144, 2);
+            try
+            {
+                if (DroppedPoint==null) return;
+                if (timeOfLastReading == DroppedPointTime) return;
+                NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144, 2);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            } 
         }
 
         private void AddData(TackReading newReading)
