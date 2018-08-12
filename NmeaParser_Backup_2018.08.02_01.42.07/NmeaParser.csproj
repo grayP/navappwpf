@@ -61,8 +61,10 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="IMultiPartMessage.cs" />
     <Compile Include="Models\ChartBusinessObject.cs" />
+    <Compile Include="Models\ChartDisplay.cs" />
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\TackReading.cs" />
     <Compile Include="Navigate\AlphaValues.cs" />
     <Compile Include="Navigate\CourseReading.cs" />
     <Compile Include="Navigate\IProcessNavigation.cs" />

@@ -30,15 +30,16 @@
                    x:Name="MainContent"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch"
+                  
                    Visibility="{Binding DisplayContent, Converter={StaticResource visibilityConverter}}" Grid.ColumnSpan="2" Margin="0,0,0.2,49.8" Grid.RowSpan="2">
-
+            <ScrollViewer >
             <ContentPresenter Content="{Binding CurrentViewModel}"
                                   DockPanel.Dock="Top"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch" />
-
+            </ScrollViewer>
         </DockPanel>
-        <StackPanel Grid.Row="2" Margin="212.929,5.2,266.2,4.8" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
             <local:NavBar />
 
         </StackPanel>

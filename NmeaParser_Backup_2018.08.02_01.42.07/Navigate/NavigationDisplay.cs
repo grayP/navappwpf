@@ -25,48 +25,12 @@ namespace NmeaParser.Navigate
         private double _lastLongitude2 = 0;
         private double _lastLatitude3 = 0;
         private double _lastLongitude3 = 0;
-        private RadObservableCollection<ChartBusinessObject> SlowCollection = new RadObservableCollection<ChartBusinessObject>();
-        private RadObservableCollection<ChartBusinessObject> FastCollection = new RadObservableCollection<ChartBusinessObject>();
-        private int _yAxisMaximum;
-        public int YAxisMaximum
-        {
-            get { return _yAxisMaximum; }
-            set
-            {
-                if (this.YAxisMaximum != value)
-                {
-                    this._yAxisMaximum = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-        private int _yAxisMinimum;
-        public int YAxisMinimum
-        {
-            get { return _yAxisMinimum; }
-            set
-            {
-                if (this.YAxisMinimum != value)
-                {
-                    this._yAxisMinimum = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-        private DateTime _minXaxis;
 
-        public DateTime MinXaxis
-        {
-            get { return _minXaxis; }
-            set
-            {
-                if (this._minXaxis != value)
-                {
-                    this._minXaxis = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
+        public ChartDisplay SogChart { get; set; } = new ChartDisplay();
+        public ChartDisplay CogChart { get; set; } = new ChartDisplay();
+
+        private GeoCoordinate DroppedPoint = new GeoCoordinate();
+        private DateTime DroppedPointTime;
 
         //  private GeoCoordinate lastCoordinate;
         private TimeSpan lastTimeSpan;
@@ -92,7 +56,6 @@ namespace NmeaParser.Navigate
             NavReadings = new NavigationReadings();
             Alpha = new AlphaValues();
             CourseReadings = new CourseReading();
-            // FillData(TackReadings);
         }
         public event PropertyChangedEventHandler PropertyChanged;
         #region Properties
@@ -135,46 +98,16 @@ namespace NmeaParser.Navigate
                 NotifyPropertyChanged();
             }
         }
-        private RadObservableCollection<ChartBusinessObject> _chartDataFast;
-        public RadObservableCollection<ChartBusinessObject> ChartDataFast
-        {
-            get => _chartDataFast;
-            set
-            {
-                if (this._chartDataFast == value) return;
-                this._chartDataFast = value;
-                NotifyPropertyChanged();
-            }
-        }
-        private RadObservableCollection<ChartBusinessObject> _chartDataSlow;
-        public RadObservableCollection<ChartBusinessObject> ChartDataSlow
-        {
-            get => this._chartDataSlow;
-            set
-            {
-                if (this._chartDataSlow == value) return;
-                this._chartDataSlow = value;
-                NotifyPropertyChanged();
-            }
-        }
 
-        #endregion
-        public class TackReading
+        public void Reset()
         {
-            public DateTime TimeOfReading { get; set; }
-            public Tack CurrentTack { get; set; }
-            public double ReadingNow { get; set; }
-            public double ReadingShort { get; set; }
-            public double ReadingLong { get; set; }
-            public double ReadingShortPast { get; set; }
-            public TackReading(NavigationReadings navReadings)
-            {
-                TimeOfReading = navReadings.TimeOfReading;
-                CurrentTack = navReadings.Tack;
-                ReadingNow = navReadings.CogNow;
-                ReadingShort = navReadings.CogFast;
-                ReadingLong = navReadings.CogSlow;
-            }
+            DroppedPoint = NavReadings.LastPosition;
+            DroppedPointTime = NavReadings.TimeOfReading;
+        }
+        #endregion
+        public bool IsGoodMessage(Gpgga newReading)
+        {
+            return newReading.NumberOfSatellites >= 3 && Math.Abs(newReading.Latitude) > 0;
         }
         public void ParseNmeaMessage(Gpgga message)
         {
@@ -226,36 +159,32 @@ namespace NmeaParser.Navigate
         {
             if (TackReadings.Count > 1000)
                 TackReadings.Dequeue();
-
             navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
-
             var newReading = new TackReading(navReadings);
             TackReadings.Enqueue(newReading);
             AddData(newReading);
-            SetMaxMin(FastCollection);
-
+            CogChart.SetmaxMin(10);
+            SogChart.SetmaxMin(1);
+            SetSogToDroppedPoint(navReadings.LastPosition, navReadings.TimeOfReading);
         }
 
-        private void SetMaxMin(RadObservableCollection<ChartBusinessObject> collection)
+        private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
         {
-            if (!collection.Any()) return;
-            var newMin = ExtensionMethods.RoundToNearest((int)collection.Min(x => x.Value), 10.0) - 20;
-            if (newMin < YAxisMinimum || newMin > YAxisMinimum + 19) YAxisMinimum = newMin;
-            YAxisMaximum = YAxisMinimum + 20;
-            var newMax = ExtensionMethods.RoundToNearest((int)collection.Max(x => x.Value), 20.0) + 20;
-            if (newMax > YAxisMaximum || newMax < YAxisMaximum - 19) YAxisMaximum = newMax;
-            MinXaxis = collection.FirstOrDefault().ReadingDateTime;
+            if (timeOfLastReading == DroppedPointTime) return;
+            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144,2);
         }
 
         private void AddData(TackReading newReading)
         {
-            ChartDataSlow = UpdateCollection(SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
-            ChartDataFast = UpdateCollection(FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+            CogChart.ChartDataFast = UpdateCollection(CogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+            CogChart.ChartDataSlow = UpdateCollection(CogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
+            SogChart.ChartDataSlow = UpdateCollection(SogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
+            SogChart.ChartDataFast = UpdateCollection(SogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
         }
 
         private RadObservableCollection<ChartBusinessObject> UpdateCollection(RadObservableCollection<ChartBusinessObject> collection, DateTime dateTime, double value, Tack Tack)
         {
-            if (collection.Count > Math.Max(NumReadings, 30)) collection.RemoveAt(0);
+            if (collection.Count > Math.Max(NumReadings, 30)) collection.Take(Math.Max(NumReadings - 1, 30));
             collection.Add(new ChartBusinessObject()
             {
                 ReadingDateTime = dateTime,
@@ -281,10 +210,6 @@ namespace NmeaParser.Navigate
             return Math.Round(firstCoord.GetDistanceTo(lastCoord) / (firstPoint.FixTime - lastPoint.FixTime).TotalSeconds * 3.6 / 1.852 * 100, 0);
         }
 
-        public bool IsGoodMessage(Gpgga newReading)
-        {
-            return newReading.NumberOfSatellites >= 3 && Math.Abs(newReading.Latitude) > 0;
-        }
     }
 
 }
