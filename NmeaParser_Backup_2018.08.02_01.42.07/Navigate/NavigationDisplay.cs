@@ -157,41 +157,65 @@ namespace NmeaParser.Navigate
 
         private void ManageQueue(NavigationReadings navReadings)
         {
-            if (TackReadings.Count > 1000)
-                TackReadings.Dequeue();
-            navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
-            var newReading = new TackReading(navReadings);
-            TackReadings.Enqueue(newReading);
-            AddData(newReading);
-            CogChart.SetmaxMin(10);
-            SogChart.SetmaxMin(1);
-            SetSogToDroppedPoint(navReadings.LastPosition, navReadings.TimeOfReading);
+            try
+            {
+                if (TackReadings.Count > 1000)
+                    TackReadings.Dequeue();
+                navReadings.CogSlowPrevious = TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack) == null ? 0 : TackReadings.FirstOrDefault(x => x.TimeOfReading > navReadings.TimeOfReading.AddSeconds(-120) && x.CurrentTack == navReadings.Tack).ReadingLong;
+                var newReading = new TackReading(navReadings);
+                TackReadings.Enqueue(newReading);
+                AddData(newReading);
+                CogChart.SetmaxMin(10);
+                SogChart.SetmaxMin(1);
+                SetSogToDroppedPoint(navReadings.LastPosition, navReadings.TimeOfReading);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private void SetSogToDroppedPoint(GeoCoordinate lastposition, DateTime timeOfLastReading)
         {
             if (timeOfLastReading == DroppedPointTime) return;
-            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144,2);
+            NavReadings.SogToPoint = Math.Round(DroppedPoint.GetDistanceTo(lastposition) / (timeOfLastReading - DroppedPointTime).TotalSeconds * .5144, 2);
         }
 
         private void AddData(TackReading newReading)
         {
-            CogChart.ChartDataFast = UpdateCollection(CogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
-            CogChart.ChartDataSlow = UpdateCollection(CogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
-            SogChart.ChartDataSlow = UpdateCollection(SogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
-            SogChart.ChartDataFast = UpdateCollection(SogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
+            try
+            {
+                CogChart.ChartDataFast = UpdateCollection(CogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingShort, newReading.CurrentTack);
+                CogChart.ChartDataSlow = UpdateCollection(CogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingLong, newReading.CurrentTack);
+                SogChart.ChartDataSlow = UpdateCollection(SogChart.SlowCollection, newReading.TimeOfReading, newReading.ReadingSpeedLong, newReading.CurrentTack);
+                SogChart.ChartDataFast = UpdateCollection(SogChart.FastCollection, newReading.TimeOfReading, newReading.ReadingSpeedShort, newReading.CurrentTack);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private RadObservableCollection<ChartBusinessObject> UpdateCollection(RadObservableCollection<ChartBusinessObject> collection, DateTime dateTime, double value, Tack Tack)
         {
-            if (collection.Count > Math.Max(NumReadings, 30)) collection.Take(Math.Max(NumReadings - 1, 30));
-            collection.Add(new ChartBusinessObject()
+            try
             {
-                ReadingDateTime = dateTime,
-                Value = value,
-                tack = Tack
-            });
-            return collection;
+                if (collection.Count > Math.Max(NumReadings, 30)) collection.Take(Math.Max(NumReadings - 1, 30));
+                collection.Add(new ChartBusinessObject()
+                {
+                    ReadingDateTime = dateTime,
+                    Value = value,
+                    tack = Tack
+                });
+                return collection;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
         public static DateTime CreateTime(TimeSpan fixTime)
         {
