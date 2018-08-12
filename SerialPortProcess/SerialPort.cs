@@ -72,21 +72,21 @@ namespace SerialPortProcess
 
         private void TrialSerialPort(int portNumber)
         {
-            if (portNumber >= _ports.Count())
-            {
+            //if (portNumber >= _ports.Count())
+            //{
                 _portNumber = portNumber = 0;
-            }
+            //}
 
             var portName = _ports[portNumber];
             var port = new System.IO.Ports.SerialPort(portName, 4800);
             var device = new NmeaParser.SerialPortDevice(port);
             StartDevice(device);
-            _serialPortTimer = new Timer
-            {
-                Interval = 5000
-            };
-            _serialPortTimer.Elapsed += SerialPortTimer_Elapsed;
-            _serialPortTimer.Start();
+            //_serialPortTimer = new Timer
+            //{
+            //    Interval = 15000
+            //};
+            //_serialPortTimer.Elapsed += SerialPortTimer_Elapsed;
+            //_serialPortTimer.Start();
         }
         private void SerialPortTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
